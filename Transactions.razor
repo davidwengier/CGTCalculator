@@ -1,0 +1,23 @@
+@using Microsoft.AspNetCore.Components.QuickGrid
+
+@inject IDataSource Data
+
+<h1>Transactions</h1>
+
+<QuickGrid Items="_transactions">
+    <PropertyColumn Property="t => t.Date" />
+    <PropertyColumn Property="t => t.Quantity" />
+    <PropertyColumn Property="t => t.Amount" />
+</QuickGrid>
+
+@code
+{
+    private IQueryable<Transaction>? _transactions;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var items = await Data.GetTransactionsAsync();
+
+        _transactions = items.AsQueryable();
+    }
+}

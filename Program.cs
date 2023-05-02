@@ -24,6 +24,9 @@ internal static class Program
     {
         var services = new ServiceCollection();
         services.AddWindowsFormsBlazorWebView();
+
+        services.AddSingleton<IDataSource, DataSource>();
+
         return services.BuildServiceProvider();
     }
 
@@ -37,7 +40,7 @@ internal static class Program
 
         webView.HostPage = "wwwroot\\index.html";
         webView.Services = serviceProvider;
-        webView.RootComponents.Add<Counter>("#app");
+        webView.RootComponents.Add<Transactions>("#app");
 
         form.Size = new Size(800, 600);
         form.Text = "CGT Calculator";
