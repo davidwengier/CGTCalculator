@@ -1,0 +1,25 @@
+﻿@if (_screen == "Transactions")
+{
+    <button @onclick="Import_Click">Import</button>
+    <Transactions />
+}
+else if (_screen == "Import")
+{
+    <button @onclick="Transactions_Click">Transactions</button>
+    <Import />
+}
+
+@code
+{
+    private string _screen = "Transactions";
+
+    public void Import_Click()
+    {
+        _screen = "Import";
+    }
+
+    public void Transactions_Click()
+    {
+        _screen = "Transactions";
+    }
+}

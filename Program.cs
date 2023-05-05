@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using CGTCalculator.Pages;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +25,6 @@ internal static class Program
         services.AddWindowsFormsBlazorWebView();
 
         services.AddSingleton<DataSource>();
-
         
         services.AddDbContext<DataSource>(options => options.UseSqlite("Data Source=CGTCalculator.db"));
 
@@ -41,7 +39,7 @@ internal static class Program
             HostPage = "wwwroot\\index.html",
             Services = serviceProvider
         };
-        webView.RootComponents.Add<Transactions>("#app");
+        webView.RootComponents.Add<Main>("#app");
 
         var form = new Form
         {

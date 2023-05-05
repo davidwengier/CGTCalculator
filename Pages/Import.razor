@@ -1,0 +1,52 @@
+﻿@page "/import"
+@using Microsoft.AspNetCore.Components.Forms
+
+<h3>Import</h3>
+
+<p>File format:</p>
+
+<table>
+    <tr>
+        @for (var i = 0; i < _columns.Count; i++)
+        {
+            <th>Column @(i + 1)</th>
+        }
+        <td><button @onclick="Add_Click">+</button></td>
+    </tr>
+    <tr>
+        @for (var i = 0; i < _columns.Count; i++)
+        {
+            var index = i;
+            var currValue = _columns[index];
+            <td>
+                <InputSelect @bind-Value:get="currValue" @bind-Value:set="(val) => { _columns[index] = val; }">
+                    <option>Date</option>
+                    <option>Quantity</option>
+                    <option>Price</option>
+                    <option>Brokerage</option>
+                    <option>Type</option>
+                    <option>Ignore</option>
+                </InputSelect>
+                <button @onclick="() => Remove_Click(index)">-</button>
+            </td>
+        }
+    </tr>
+</table>
+
+<p>CSV File:</p>
+<InputFile />
+
+@code
+{
+    private List<string> _columns = new List<string>(new[] { "Date", "Quantity", "Price" });
+
+    public void Add_Click()
+    {
+        _columns.Add("Ignore");
+    }
+
+    public void Remove_Click(int index)
+    {
+        _columns.RemoveAt(index);
+    }
+}
