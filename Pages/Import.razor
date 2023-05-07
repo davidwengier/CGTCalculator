@@ -20,12 +20,12 @@
             var currValue = _columns[index];
             <td>
                 <InputSelect @bind-Value:get="currValue" @bind-Value:set="(val) => { _columns[index] = val; }">
-                    <option>Date</option>
-                    <option>Quantity</option>
-                    <option>Price</option>
-                    <option>Brokerage</option>
-                    <option>Type</option>
-                    <option>Ignore</option>
+                    <option>@nameof(Field.Date)</option>
+                    <option>@nameof(Field.Quantity)</option>
+                    <option>@nameof(Field.Price)</option>
+                    <option>@nameof(Field.Brokerage)</option>
+                    <option>@nameof(Field.Type)</option>
+                    <option>@nameof(Field.Ignore)</option>
                 </InputSelect>
                 <button @onclick="() => Remove_Click(index)">-</button>
             </td>
@@ -34,19 +34,66 @@
 </table>
 
 <p>CSV File:</p>
-<InputFile />
+<p><InputFile OnChange="File_Change" /></p>
+@if (_buttonClicked && _lastSelectedFile is null)
+{
+    <p style="color: red">Please select a file to import</p>
+}
+
+<button @onclick="DoImport">Import</button>
 
 @code
 {
-    private List<string> _columns = new List<string>(new[] { "Date", "Quantity", "Price" });
+    private bool _buttonClicked;
+    private IBrowserFile? _lastSelectedFile;
+
+    private List<Field> _columns = new(new[] { Field.Date, Field.Quantity, Field.Price });
 
     public void Add_Click()
     {
-        _columns.Add("Ignore");
+        _columns.Add(Field.Ignore);
     }
 
     public void Remove_Click(int index)
     {
         _columns.RemoveAt(index);
     }
+
+    public async Task File_Change(InputFileChangeEventArgs e)
+    {
+        using var inputStream = e.File.OpenReadStream();
+        using var streamReader = new StreamReader(inputStream);
+        var line = await streamReader.ReadLineAsync();
+        if (line is null)
+        {
+            return;
+        }
+
+        _lastSelectedFile = e.File;
+        _columns.Clear();
+        foreach (var col in line.Split(','))
+        {
+            _columns.Add(TryMatchColumnName(col));
+        }
+    }
+
+    public void DoImport()
+    {
+        _buttonClicked = true;
+        if (_lastSelectedFile is null)
+        {
+            // TODO:
+        }
+    }
+
+    private static Field TryMatchColumnName(string columnFromFile)
+        => columnFromFile switch
+        {
+            "Date" or "DateTime" or "TransactionDate" => Field.Date,
+            "Qty" or "Quantity" => Field.Quantity,
+            "$" or "Price" or "UnitPrice" or "Amount" => Field.Price,
+            "Brokerage" => Field.Brokerage,
+            "Type" or "TransactionType" => Field.Type,
+            _ => Field.Ignore
+        };
 }
