@@ -25,29 +25,29 @@ internal static class Program
         services.AddWindowsFormsBlazorWebView();
 
         services.AddSingleton<DataSource>();
-        
+
         services.AddDbContext<DataSource>(options => options.UseSqlite("Data Source=CGTCalculator.db"));
 
         return services.BuildServiceProvider();
     }
 
-    private static Form CreateForm(ServiceProvider serviceProvider)
-    {
-        var webView = new BlazorWebView
+    private static Form CreateForm(ServiceProvider services)
+        => new Form
         {
-            Dock = DockStyle.Fill,
-            HostPage = "wwwroot\\index.html",
-            Services = serviceProvider
-        };
-        webView.RootComponents.Add<Main>("#app");
-
-        var form = new Form
-        {
-            Size = new Size(800, 600),
+            Size = new Size(1000, 800),
             Text = "CGT Calculator",
-            Controls = { webView }
+            Controls =
+            {
+                new BlazorWebView
+                {
+                    Dock = DockStyle.Fill,
+                    HostPage = @"wwwroot\index.html",
+                    Services = services,
+                    RootComponents =
+                    {
+                        new RootComponent("#app", typeof(Main), null)
+                    }
+                }
+            }
         };
-
-        return form;
-    }
 }

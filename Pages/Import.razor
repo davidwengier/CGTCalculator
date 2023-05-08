@@ -1,7 +1,7 @@
 ﻿@page "/import"
-@using Microsoft.AspNetCore.Components.Forms
+@inject NavigationManager NavigationManager
 
-<h3>Import</h3>
+<Nav ShowHome="true" Title="Import" />
 
 <p>File format:</p>
 
@@ -57,6 +57,11 @@
     public void Remove_Click(int index)
     {
         _columns.RemoveAt(index);
+    }
+
+    public void Back_Click()
+    {
+        NavigationManager.NavigateTo("/");
     }
 
     public async Task File_Change(InputFileChangeEventArgs e)

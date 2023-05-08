@@ -1,0 +1,27 @@
+@inject NavigationManager NavigationManager
+
+<table>
+    <tr>
+        @if (ShowHome)
+        {
+            <td><button @onclick="Home_Click">Home</button></td>
+        }
+        <td>
+            <h3>@Title</h3>
+        </td>
+    </tr>
+</table>
+
+@code
+{
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public bool ShowHome { get; set; }
+
+    private void Home_Click()
+    {
+        NavigationManager.NavigateTo("/");   
+    }
+}

@@ -1,25 +1,11 @@
-﻿@if (_screen == "Transactions")
-{
-    <button @onclick="Import_Click">Import</button>
-    <Transactions />
-}
-else if (_screen == "Import")
-{
-    <button @onclick="Transactions_Click">Transactions</button>
-    <Import />
-}
+﻿@using Microsoft.AspNetCore.Components.Routing
 
-@code
-{
-    private string _screen = "Transactions";
-
-    public void Import_Click()
-    {
-        _screen = "Import";
-    }
-
-    public void Transactions_Click()
-    {
-        _screen = "Transactions";
-    }
-}
+<Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" />
+    </Found>
+    <NotFound>
+        <h1>Sorry</h1>
+        <p>Sorry, there's nothing at this address.</p>
+    </NotFound>
+</Router>

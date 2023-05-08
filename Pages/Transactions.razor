@@ -1,14 +1,19 @@
+@page "/"
 @inject DataSource Data
+@inject NavigationManager NavigationManager
 
 @using Microsoft.AspNetCore.Components.QuickGrid
 
-<h1>Transactions</h1>
+<Nav ShowHome="false" Title="Transactions" />
 
 <QuickGrid Items="_transactions">
     <PropertyColumn Property="t => t.Date" />
     <PropertyColumn Property="t => t.Quantity" />
     <PropertyColumn Property="t => t.Amount" />
 </QuickGrid>
+
+<button @onclick="Add_Click">Add</button>
+<button @onclick="Import_Click">Import</button>
 
 @code
 {
@@ -19,5 +24,15 @@
         var items = await Data.GetTransactionsAsync();
 
         _transactions = items.AsQueryable();
+    }
+
+    private void Add_Click()
+    {
+
+    }
+
+    private void Import_Click()
+    {
+        NavigationManager.NavigateTo("/import");
     }
 }
