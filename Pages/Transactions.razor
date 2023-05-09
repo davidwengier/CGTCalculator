@@ -1,4 +1,5 @@
 @page "/"
+@page "/transactions"
 @inject DataSource Data
 @inject NavigationManager NavigationManager
 
@@ -28,7 +29,7 @@
 
     private void Add_Click()
     {
-
+        NavigationManager.NavigateTo("/add");
     }
 
     private void Import_Click()

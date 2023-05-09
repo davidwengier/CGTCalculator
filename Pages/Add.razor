@@ -1,0 +1,44 @@
+@page "/add"
+@inject NavigationManager NavigationManager
+
+<Nav ShowHome="false" Title="Add Transaction" />
+
+<ul>
+    <li>Date: <InputDate @bind-Value="_model.Date" /></li>
+    <li>Type:
+        <InputSelect @bind-Value="_model.Type">
+            @foreach (var item in Enum.GetValues<TransactionType>())
+            {
+                <option value="@item">@item.ToString()</option>
+            }
+        </InputSelect>
+    </li>
+    <li>Quantity: <InputNumber @bind-Value="_model.Quantity" /></li>
+    <li>Unit Price: <InputNumber @bind-Value="_model.UnitPrice" /></li>
+</ul>
+
+<button @onclick="Add_Click">Add</button>
+<button @onclick="Cancel_Click">Cancel</button>
+
+@code
+{
+    private class TransactionModel
+    {
+        public DateOnly Date = DateTime.Now.ToDateOnly();
+        public TransactionType Type;
+        public int Quantity;
+        public decimal UnitPrice;
+    }
+
+    private TransactionModel _model = new();
+
+    private void Add_Click()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void Cancel_Click()
+    {
+        NavigationManager.NavigateTo("/transactions");
+    }
+}
