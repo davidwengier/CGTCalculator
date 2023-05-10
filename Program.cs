@@ -1,4 +1,4 @@
-using CGTCalculator.Pages;
+﻿using CGTCalculator.Pages;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,11 +8,13 @@ namespace CGTCalculator;
 internal static class Program
 {
     [STAThread]
-    static void Main()
+    public static void Main()
     {
         ApplicationConfiguration.Initialize();
 
         var services = ConfigureServices();
+
+        ConfigureDatabase(services);
 
         var form = CreateForm(services);
 
@@ -29,6 +31,13 @@ internal static class Program
         services.AddDbContext<DataSource>(options => options.UseSqlite("Data Source=CGTCalculator.db"));
 
         return services.BuildServiceProvider();
+    }
+
+    private static void ConfigureDatabase(ServiceProvider services)
+    {
+        var database = services.GetRequiredService<DataSource>();
+        database.Database.EnsureCreated();
+        _ = database.GetDatabaseInfo();
     }
 
     private static Form CreateForm(ServiceProvider services)

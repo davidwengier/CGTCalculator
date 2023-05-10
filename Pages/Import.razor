@@ -68,7 +68,7 @@
     {
         using var inputStream = e.File.OpenReadStream();
         using var streamReader = new StreamReader(inputStream);
-        var line = await streamReader.ReadLineAsync();
+        var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
         if (line is null)
         {
             return;
