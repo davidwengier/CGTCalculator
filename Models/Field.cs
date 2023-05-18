@@ -2,6 +2,7 @@
 
 internal enum Field
 {
+    Symbol,
     Date,
     Quantity,
     Price,

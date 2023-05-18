@@ -1,5 +1,6 @@
 ﻿@page "/import"
 @inject NavigationManager NavigationManager
+@inject DataSource DataSource
 
 <Nav ShowHome="true" Title="Import" />
 
@@ -20,6 +21,7 @@
             var currValue = _columns[index];
             <td>
                 <InputSelect @bind-Value:get="currValue" @bind-Value:set="(val) => { _columns[index] = val; }">
+                    <option>@nameof(Field.Symbol)</option>
                     <option>@nameof(Field.Date)</option>
                     <option>@nameof(Field.Quantity)</option>
                     <option>@nameof(Field.Price)</option>
@@ -82,20 +84,67 @@
         }
     }
 
-    public void DoImport()
+    public async Task DoImport()
     {
         _buttonClicked = true;
-        if (_lastSelectedFile is null)
+        if (_lastSelectedFile is not null)
         {
-            // TODO:
+            using var inputStream = _lastSelectedFile.OpenReadStream();
+            using var streamReader = new StreamReader(inputStream);
+            _ = await streamReader.ReadLineAsync().ConfigureAwait(false);
+
+            string? line;
+            while ((line = await streamReader.ReadLineAsync().ConfigureAwait(false)) != null)
+            {
+                var transaction = new Transaction();
+                transaction.Id = Guid.NewGuid();
+
+                var data = line.Split(',');
+                for (int i = 0; i < _columns.Count; i++)
+                {
+                    SetField(transaction, _columns[i], data[i]);
+                }
+
+                await DataSource.Transactions.AddAsync(transaction).ConfigureAwait(false);
+            }
+
+            await DataSource.SaveChangesAsync().ConfigureAwait(false);
+
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+    private void SetField(Transaction transaction, Field field, string value)
+    {
+        switch (field)
+        {
+            case Field.Symbol:
+                transaction.Symbol = value;
+                break;
+            case Field.Date:
+                transaction.Date = DateOnly.Parse(value);
+                break;
+            case Field.Quantity:
+                transaction.Quantity = decimal.Parse(value);
+                break;
+            case Field.Price:
+                transaction.Amount = decimal.Parse(value);
+                break;
+            case Field.Brokerage:
+                //transaction.Date = DateOnly.Parse(value);
+                break;
+            case Field.Type:
+                transaction.Type = Enum.Parse<TransactionType>(value);
+                break;
         }
     }
 
     private static Field TryMatchColumnName(string columnFromFile)
         => columnFromFile switch
         {
+            "Symbol" or "Stock" or "Ticker" => Field.Symbol,
             "Date" or "DateTime" or "TransactionDate" => Field.Date,
-            "Qty" or "Quantity" => Field.Quantity,
+            "Qty" or "Quantity" or "Units" => Field.Quantity,
             "$" or "Price" or "UnitPrice" or "Amount" => Field.Price,
             "Brokerage" => Field.Brokerage,
             "Type" or "TransactionType" => Field.Type,

@@ -4,6 +4,7 @@
 <Nav ShowHome="false" Title="Add Transaction" />
 
 <ul>
+    <li>Symbol: <InputText @bind-Value="_model.Symbol" /></li>
     <li>Date: <InputDate @bind-Value="_model.Date" /></li>
     <li>Type:
         <InputSelect @bind-Value="_model.Type">
@@ -24,6 +25,7 @@
 {
     private class TransactionModel
     {
+        public string Symbol = "";
         public DateOnly Date = DateTime.Now.ToDateOnly();
         public TransactionType Type;
         public int Quantity;

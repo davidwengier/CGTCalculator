@@ -28,6 +28,7 @@ internal static class Program
 
         services.AddSingleton<DataSource>();
 
+        services.AddQuickGridEntityFrameworkAdapter();
         services.AddDbContext<DataSource>(options => options.UseSqlite("Data Source=CGTCalculator.db"));
 
         return services.BuildServiceProvider();

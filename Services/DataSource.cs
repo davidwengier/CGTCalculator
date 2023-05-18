@@ -4,8 +4,8 @@ namespace CGTCalculator;
 
 internal class DataSource : DbContext
 {
-    private DbSet<DatabaseInfo> DatabaseInfos { get; set; } = null!;
-    private DbSet<Transaction> Transactions { get; set; } = null!;
+    public DbSet<DatabaseInfo> DatabaseInfos { get; set; } = null!;
+    public DbSet<Transaction> Transactions { get; set; } = null!;
 
     public DataSource(DbContextOptions<DataSource> options)
         : base(options)
@@ -38,10 +38,5 @@ internal class DataSource : DbContext
 
         SaveChanges();
         return databaseInfo;
-    }
-
-    public async Task<IEnumerable<Transaction>> GetTransactionsAsync()
-    {
-        return await this.Transactions.ToListAsync().ConfigureAwait(false); ;
     }
 }
