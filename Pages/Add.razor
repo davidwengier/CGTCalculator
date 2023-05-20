@@ -1,4 +1,6 @@
 @page "/add"
+@page "/edit/{id:guid}"
+
 @inject DataSource DataSource
 @inject NavigationManager NavigationManager
 
@@ -22,5 +24,5 @@
     <tr><td>Value:</td><td><InputNumber @bind-Value="_model.Value" /></td></tr>
 </table>
 
-<button @onclick="Add_Click">Add</button>
+<button @onclick="Add_Click">@(IsAdd ? "Add" : "Save")</button>
 <button @onclick="Cancel_Click">Cancel</button>

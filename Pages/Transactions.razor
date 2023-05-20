@@ -12,7 +12,7 @@
 <button @onclick="Import_Click">Import</button>
 
 <div class="grid">
-    <QuickGrid Items="_transactions">
+    <QuickGrid Items="_transactions" @ref="_grid">
         <PropertyColumn Property="t => t.Date" Format="dd MMM yyyy" Sortable="true" IsDefaultSort="SortDirection.Descending" />
         <PropertyColumn Property="t => t.Type" />
         <PropertyColumn Property="t => t.Symbol" />
@@ -31,6 +31,8 @@
 
 @code
 {
+    private QuickGrid<Transaction> _grid;
+
     private IQueryable<Transaction>? _transactions;
 
     protected override Task OnInitializedAsync()
@@ -52,9 +54,13 @@
 
     private void Edit_Click(Transaction transaction)
     {
+        NavigationManager.NavigateTo($"/edit/{transaction.Id}");
     }
 
-    private void Delete_Click(Transaction transaction)
+    private async Task Delete_Click(Transaction transaction)
     {
+        Data.Remove(transaction);
+        await Data.SaveChangesAsync();
+        await _grid.RefreshDataAsync().ConfigureAwait(false);
     }
 }
