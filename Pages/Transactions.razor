@@ -58,6 +58,7 @@
 
     private async Task Delete_Click(Transaction transaction)
     {
+        // Note to readers: You can't do this in a normal Blazor app :D
         if (MessageBox.Show($"Are you sure to wish to delete this {transaction.Type} of {transaction.Symbol} for {transaction.Value:$#,##0.00}?", "Are you sure?", MessageBoxButtons.YesNo) == DialogResult.Yes)
         {
             Data.Remove(transaction);
