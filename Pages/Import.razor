@@ -1,153 +1,46 @@
 ﻿@page "/import"
-@inject NavigationManager NavigationManager
 @inject DataSource DataSource
+@inject NavigationManager NavigationManager
 
 <Nav ShowHome="true" Title="Import" />
 
-<p>File format:</p>
-
-<table>
-    <tr>
-        @for (var i = 0; i < _columns.Count; i++)
-        {
-            <th>Column @(i + 1)</th>
-        }
-        <td><button @onclick="Add_Click">+</button></td>
-    </tr>
-    <tr>
-        @for (var i = 0; i < _columns.Count; i++)
-        {
-            var index = i;
-            var currValue = _columns[index];
-            <td>
-                <InputSelect @bind-Value:get="currValue" @bind-Value:set="(val) => { _columns[index] = val; }">
-                    <option>@nameof(Field.Symbol)</option>
-                    <option>@nameof(Field.Date)</option>
-                    <option>@nameof(Field.Quantity)</option>
-                    <option>@nameof(Field.Price)</option>
-                    <option>@nameof(Field.Brokerage)</option>
-                    <option>@nameof(Field.Type)</option>
-                    <option>@nameof(Field.Ignore)</option>
-                </InputSelect>
-                <button @onclick="() => Remove_Click(index)">-</button>
-            </td>
-        }
-    </tr>
-</table>
-
-<p>CSV File:</p>
 <p><InputFile OnChange="File_Change" /></p>
-@if (_buttonClicked && _lastSelectedFile is null)
+
+@if (_lastSelectedFile is not null)
 {
-    <p style="color: red">Please select a file to import</p>
+    <table>
+        <tr>
+            <th>File column:</th>
+            @foreach (var col in _fileColumns!)
+            {
+                <th>@col</th>
+            }
+        </tr>
+
+        <tr>
+            <th>Map to:</th>
+
+            @for (var i = 0; i < _columns.Count; i++)
+            {
+                var index = i;
+                var currValue = _columns[index];
+                <td>
+                    <InputSelect @bind-Value:get="currValue" @bind-Value:set="(val) => { _columns[index] = val; }">
+                        <option>@nameof(Field.Symbol)</option>
+                        <option>@nameof(Field.Date)</option>
+                        <option>@nameof(Field.Quantity)</option>
+                        <option>@nameof(Field.Value)</option>
+                        <option>@nameof(Field.Type)</option>
+                        <option>@nameof(Field.Ignore)</option>
+                    </InputSelect>
+                </td>
+            }
+        </tr>
+    </table>
 }
 
 <button @onclick="DoImport">Import</button>
-
-@code
+@if (_buttonClicked && _lastSelectedFile is null)
 {
-    private bool _buttonClicked;
-    private IBrowserFile? _lastSelectedFile;
-
-    private List<Field> _columns = new(new[] { Field.Date, Field.Quantity, Field.Price });
-
-    public void Add_Click()
-    {
-        _columns.Add(Field.Ignore);
-    }
-
-    public void Remove_Click(int index)
-    {
-        _columns.RemoveAt(index);
-    }
-
-    public void Back_Click()
-    {
-        NavigationManager.NavigateTo("/");
-    }
-
-    public async Task File_Change(InputFileChangeEventArgs e)
-    {
-        using var inputStream = e.File.OpenReadStream();
-        using var streamReader = new StreamReader(inputStream);
-        var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-        if (line is null)
-        {
-            return;
-        }
-
-        _lastSelectedFile = e.File;
-        _columns.Clear();
-        foreach (var col in line.Split(','))
-        {
-            _columns.Add(TryMatchColumnName(col));
-        }
-    }
-
-    public async Task DoImport()
-    {
-        _buttonClicked = true;
-        if (_lastSelectedFile is not null)
-        {
-            using var inputStream = _lastSelectedFile.OpenReadStream();
-            using var streamReader = new StreamReader(inputStream);
-            _ = await streamReader.ReadLineAsync().ConfigureAwait(false);
-
-            string? line;
-            while ((line = await streamReader.ReadLineAsync().ConfigureAwait(false)) != null)
-            {
-                var transaction = new Transaction();
-                transaction.Id = Guid.NewGuid();
-
-                var data = line.Split(',');
-                for (int i = 0; i < _columns.Count; i++)
-                {
-                    SetField(transaction, _columns[i], data[i]);
-                }
-
-                await DataSource.Transactions.AddAsync(transaction).ConfigureAwait(false);
-            }
-
-            await DataSource.SaveChangesAsync().ConfigureAwait(false);
-
-            NavigationManager.NavigateTo("/");
-        }
-    }
-
-    private void SetField(Transaction transaction, Field field, string value)
-    {
-        switch (field)
-        {
-            case Field.Symbol:
-                transaction.Symbol = value;
-                break;
-            case Field.Date:
-                transaction.Date = DateOnly.Parse(value);
-                break;
-            case Field.Quantity:
-                transaction.Quantity = decimal.Parse(value);
-                break;
-            case Field.Price:
-                transaction.Amount = decimal.Parse(value);
-                break;
-            case Field.Brokerage:
-                //transaction.Date = DateOnly.Parse(value);
-                break;
-            case Field.Type:
-                transaction.Type = Enum.Parse<TransactionType>(value);
-                break;
-        }
-    }
-
-    private static Field TryMatchColumnName(string columnFromFile)
-        => columnFromFile switch
-        {
-            "Symbol" or "Stock" or "Ticker" => Field.Symbol,
-            "Date" or "DateTime" or "TransactionDate" => Field.Date,
-            "Qty" or "Quantity" or "Units" => Field.Quantity,
-            "$" or "Price" or "UnitPrice" or "Amount" => Field.Price,
-            "Brokerage" => Field.Brokerage,
-            "Type" or "TransactionType" => Field.Type,
-            _ => Field.Ignore
-        };
+    <p style="color: red">Please select a file to import</p>
 }

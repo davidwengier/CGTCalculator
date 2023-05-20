@@ -8,18 +8,20 @@
 
 <Nav ShowHome="false" Title="Transactions" />
 
+<button @onclick="Add_Click">Add Transaction</button>
+<button @onclick="Import_Click">Import</button>
+
 <QuickGrid Items="_transactions">
-    <PropertyColumn Property="t => t.Date" Sortable="true" IsDefaultSort="SortDirection.Descending" />
+    <PropertyColumn Property="t => t.Date" Format="d MMM yyyy" Sortable="true" IsDefaultSort="SortDirection.Descending" />
     <PropertyColumn Property="t => t.Type" />
     <PropertyColumn Property="t => t.Symbol" />
-    <PropertyColumn Property="t => t.Quantity" Sortable="true" />
-    <TemplateColumn Title="Amount">
-        <span class="@context.Type.ToString().ToLower()">@context.Amount.ToString("$#,##0.00")</span>
+    <TemplateColumn Title="@nameof(Field.Quantity)">
+        <span class="quantity @context.Type.ToString().ToLower()">@context.Quantity.ToString("0.####")</span>
+    </TemplateColumn>
+    <TemplateColumn Title="@nameof(Field.Value)">
+        <span class="money @context.Type.ToString().ToLower()">@context.Value.ToString("$#,##0.00")</span>
     </TemplateColumn>
 </QuickGrid>
-
-<button @onclick="Add_Click">Add</button>
-<button @onclick="Import_Click">Import</button>
 
 @code
 {
