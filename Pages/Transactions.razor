@@ -11,17 +11,23 @@
 <button @onclick="Add_Click">Add Transaction</button>
 <button @onclick="Import_Click">Import</button>
 
-<QuickGrid Items="_transactions">
-    <PropertyColumn Property="t => t.Date" Format="d MMM yyyy" Sortable="true" IsDefaultSort="SortDirection.Descending" />
-    <PropertyColumn Property="t => t.Type" />
-    <PropertyColumn Property="t => t.Symbol" />
-    <TemplateColumn Title="@nameof(Field.Quantity)">
-        <span class="quantity @context.Type.ToString().ToLower()">@context.Quantity.ToString("0.####")</span>
-    </TemplateColumn>
-    <TemplateColumn Title="@nameof(Field.Value)">
-        <span class="money @context.Type.ToString().ToLower()">@context.Value.ToString("$#,##0.00")</span>
-    </TemplateColumn>
-</QuickGrid>
+<div class="grid">
+    <QuickGrid Items="_transactions">
+        <PropertyColumn Property="t => t.Date" Format="dd MMM yyyy" Sortable="true" IsDefaultSort="SortDirection.Descending" />
+        <PropertyColumn Property="t => t.Type" />
+        <PropertyColumn Property="t => t.Symbol" />
+        <TemplateColumn Title="@nameof(Field.Quantity)" Align="Align.Right">
+            <span class="quantity @context.Type.ToString().ToLower()">@context.Quantity.ToString("0.####")</span>
+        </TemplateColumn>
+        <TemplateColumn Title="@nameof(Field.Value)" Align="Align.Right">
+            <span class="money @context.Type.ToString().ToLower()">@context.Value.ToString("$#,##0.00")</span>
+        </TemplateColumn>
+        <TemplateColumn>
+            <button @onclick="() => Edit_Click(context)">Edit</button>
+            <button @onclick="() => Delete_Click(context)">Delete</button>
+        </TemplateColumn>
+    </QuickGrid>
+</div>
 
 @code
 {
@@ -42,5 +48,13 @@
     private void Import_Click()
     {
         NavigationManager.NavigateTo("/import");
+    }
+
+    private void Edit_Click(Transaction transaction)
+    {
+    }
+
+    private void Delete_Click(Transaction transaction)
+    {
     }
 }

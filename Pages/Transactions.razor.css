@@ -5,3 +5,21 @@
 .money.buy {
     color: green;
 }
+
+.grid {
+    height: 22rem;
+    overflow-y: auto;
+}
+
+/* Sticky header while scrolling */
+.grid ::deep thead {
+    position: sticky;
+    top: 0;
+    background-color: #d8d8d8;
+    outline: 1px solid gray;
+    z-index: 1;
+}
+
+.grid ::deep table {
+    min-width: 100%;
+}
