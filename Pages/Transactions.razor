@@ -31,8 +31,7 @@
 
 @code
 {
-    private QuickGrid<Transaction> _grid;
-
+    private QuickGrid<Transaction> _grid = null!;
     private IQueryable<Transaction>? _transactions;
 
     protected override Task OnInitializedAsync()
@@ -59,8 +58,11 @@
 
     private async Task Delete_Click(Transaction transaction)
     {
-        Data.Remove(transaction);
-        await Data.SaveChangesAsync();
-        await _grid.RefreshDataAsync().ConfigureAwait(false);
+        if (MessageBox.Show($"Are you sure to wish to delete this {transaction.Type} of {transaction.Symbol} for {transaction.Value:$#,##0.00}?", "Are you sure?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+        {
+            Data.Remove(transaction);
+            await Data.SaveChangesAsync();
+            await _grid.RefreshDataAsync().ConfigureAwait(false);
+        }
     }
 }
