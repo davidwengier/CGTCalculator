@@ -5,7 +5,7 @@ namespace CGTCalculator.Pages;
 
 public partial class Transactions
 {
-    private QuickGrid<Transaction> _grid = null !;
+    private QuickGrid<Transaction> _grid = null!;
     private IQueryable<Transaction>? _transactions;
 
     protected override Task OnInitializedAsync()

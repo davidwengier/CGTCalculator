@@ -1,14 +1,33 @@
 ﻿@page "/report"
+@inject DataSource Data
+
+@using Microsoft.AspNetCore.Components.QuickGrid
 
 <Nav ShowHome="true" Title="Report" />
 
 <InputSelect @bind-Value="_selectedYear">
     @for (var y = DateTime.Now.Year; y >= 2000; y--)
     {
-        <option>@y</option>
+        <option value="@y">@(y)/@((y + 1) % 100)</option>
     }
 </InputSelect>
+<button @onclick="View_Click">View</button>
+
+<QuickGrid @ref="_grid" Items="_report">
+    <TemplateColumn>
+        @context
+    </TemplateColumn>
+</QuickGrid>
 
 @code {
-    private int _selectedYear = DateTime.Now.Year;
+    private QuickGrid<string> _grid = null!;
+    private IQueryable<string>? _report;
+    private int _selectedYear = DateTime.Now.Year - 1;
+
+    private async Task View_Click()
+    {
+        var results = await CgtReportCreator.CreateAsync(this.Data, _selectedYear).ConfigureAwait(false);
+        _report = results.AsQueryable();
+        await _grid!.RefreshDataAsync().ConfigureAwait(false);
+    }
 }
