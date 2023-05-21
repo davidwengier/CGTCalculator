@@ -1,0 +1,14 @@
+﻿@page "/report"
+
+<Nav ShowHome="true" Title="Report" />
+
+<InputSelect @bind-Value="_selectedYear">
+    @for (var y = DateTime.Now.Year; y >= 2000; y--)
+    {
+        <option>@y</option>
+    }
+</InputSelect>
+
+@code {
+    private int _selectedYear = DateTime.Now.Year;
+}

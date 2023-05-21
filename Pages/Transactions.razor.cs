@@ -37,6 +37,11 @@ public partial class Transactions
         }
     }
 
+    private void Report_Click()
+    {
+        this.NavigationManager.NavigateTo("/report");
+    }
+
     private void Edit_Click(Transaction transaction)
     {
         this.NavigationManager.NavigateTo($"/edit/{transaction.Id}");
