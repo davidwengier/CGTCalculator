@@ -10,6 +10,7 @@
 
 <button @onclick="Add_Click">Add Transaction</button>
 <button @onclick="Import_Click">Import</button>
+<button @onclick="Export_Click">Export</button>
 
 <div class="grid">
     <QuickGrid Items="_transactions" @ref="_grid">
@@ -28,42 +29,3 @@
         </TemplateColumn>
     </QuickGrid>
 </div>
-
-@code
-{
-    private QuickGrid<Transaction> _grid = null!;
-    private IQueryable<Transaction>? _transactions;
-
-    protected override Task OnInitializedAsync()
-    {
-        _transactions = Data.Transactions;
-
-        return Task.CompletedTask;
-    }
-
-    private void Add_Click()
-    {
-        NavigationManager.NavigateTo("/add");
-    }
-
-    private void Import_Click()
-    {
-        NavigationManager.NavigateTo("/import");
-    }
-
-    private void Edit_Click(Transaction transaction)
-    {
-        NavigationManager.NavigateTo($"/edit/{transaction.Id}");
-    }
-
-    private async Task Delete_Click(Transaction transaction)
-    {
-        // Note to readers: You can't do this in a normal Blazor app :D
-        if (MessageBox.Show($"Are you sure to wish to delete this {transaction.Type} of {transaction.Symbol} for {transaction.Value:$#,##0.00}?", "Are you sure?", MessageBoxButtons.YesNo) == DialogResult.Yes)
-        {
-            Data.Remove(transaction);
-            await Data.SaveChangesAsync();
-            await _grid.RefreshDataAsync().ConfigureAwait(false);
-        }
-    }
-}
