@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace CGTCalculator;
+﻿namespace CGTCalculator;
 
 internal class DataSource : DbContext
 {

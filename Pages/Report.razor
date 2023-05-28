@@ -13,21 +13,31 @@
 </InputSelect>
 <button @onclick="View_Click">View</button>
 
-<QuickGrid @ref="_grid" Items="_report">
-    <TemplateColumn>
-        @context
-    </TemplateColumn>
-</QuickGrid>
+@if (_report is not null)
+{
+    foreach (var report in _report)
+    {
+        <h3>@report.TaxYear</h3>
+
+        foreach (var (sale, buys) in report.Sales)
+        {
+            <p><b>Sold @sale.Quantity.ToString("0.####") of @sale.Symbol for @sale.Value.ToString("$#,##0.00") on @sale.Date.</b></p>
+            <ol>
+                @foreach (var buy in buys)
+                {
+                    <li>Bought @buy.Quantity.ToString("0.####") for @buy.Value.ToString("$#,##0.00") on @buy.Date@(buy.Id == Guid.Empty ? " (partial sale)" : "")</li>
+                }
+            </ol>
+        }
+    }
+}
 
 @code {
-    private QuickGrid<string> _grid = null!;
-    private IQueryable<string>? _report;
+    private List<CgtReport>? _report;
     private int _selectedYear = DateTime.Now.Year - 1;
 
     private async Task View_Click()
     {
-        var results = await CgtReportCreator.CreateAsync(this.Data, _selectedYear).ConfigureAwait(false);
-        _report = results.AsQueryable();
-        await _grid!.RefreshDataAsync().ConfigureAwait(false);
+        _report = await CgtReportCreator.CreateAsync(this.Data, _selectedYear).ConfigureAwait(false);
     }
 }

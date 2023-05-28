@@ -1,6 +1,5 @@
 ﻿using CGTCalculator.Pages;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CGTCalculator;

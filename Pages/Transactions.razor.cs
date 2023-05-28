@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components.QuickGrid;
-using Microsoft.EntityFrameworkCore;
 
 namespace CGTCalculator.Pages;
 
