@@ -8,6 +8,8 @@ internal class CgtReport(int taxYear)
     public string TaxYear => $"{taxYear}/{taxYear + 1 % 100}";
     public List<(Transaction Sale, List<Transaction> Buys)> Sales => _sales;
 
+    public List<CgtEvent> LineItems { get; } = new();
+
     public void AddSale(Transaction sale, List<Transaction> buys)
     {
         _sales.Add((sale, buys));

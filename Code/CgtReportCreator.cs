@@ -2,36 +2,33 @@
 
 internal static class CgtReportCreator
 {
-    public static async Task<List<CgtReport>> CreateAsync(DataSource dataSource, int yearToReport)
+    public static async Task<List<CgtReport>> CreateAsync(DataSource dataSource)
     {
-        var startOfYear = new DateOnly(yearToReport, 7, 1);
-        var endOfYear = new DateOnly(yearToReport + 1, 6, 30);
         var transactions = await dataSource.Transactions.AsNoTracking().OrderBy(t => t.Date).ToListAsync();
 
         var openTransactions = new List<Transaction>();
         var results = new Dictionary<int, CgtReport>();
         foreach (var t in transactions)
         {
-            var report = GetCgtReport(results, t);
-
             if (t.Type == TransactionType.Buy)
             {
                 openTransactions.Add(t);
             }
             else
             {
-                var buys = FillSale(openTransactions, t);
-                report.AddSale(t, buys);
+                var report = GetCgtReport(results, t);
+                report.LineItems.AddRange(CreateLineItems(openTransactions, t));
             }
         }
 
         return results.Values.OrderBy(r => r.TaxYearSort).ToList();
     }
 
-    private static List<Transaction> FillSale(List<Transaction> openTransactions, Transaction saleTransaction)
+    private static List<CgtEvent> CreateLineItems(List<Transaction> openTransactions, Transaction saleTransaction)
     {
+        var lineItems = new List<CgtEvent>();
         var quantityToSell = Math.Abs(saleTransaction.Quantity);
-        var soldTransactions = new List<Transaction>();
+        var saleSharePrice = saleTransaction.Value / saleTransaction.Quantity;
         for (var i = 0; i < openTransactions.Count; i++)
         {
             var t = openTransactions[i];
@@ -49,30 +46,41 @@ internal static class CgtReportCreator
             {
                 var originalQuantity = t.Quantity;
                 var originalSharePrice = t.Value / t.Quantity;
-                var newTransaction = new Transaction
-                {
-                    Quantity = quantityToSell,
-                    Symbol = t.Symbol,
-                    Date = t.Date,
-                    Type = t.Type,
-                    Value = originalSharePrice * quantityToSell,
-                    Id = Guid.Empty
-                };
 
-                // We're using NoTracking, so these changes won't make it into the database
+                // We're using NoTracking, so these changes won't make it into the database, but we need them for finding
+                // parts of future sales
                 t.Value = originalSharePrice * (originalQuantity - quantityToSell);
                 t.Quantity -= quantityToSell;
-                soldTransactions.Add(newTransaction);
+
+                lineItems.Add(new CgtEvent
+                {
+                    Symbol = saleTransaction.Symbol,
+                    PurchaseDate = t.Date,
+                    SellDate = saleTransaction.Date,
+                    Quantity = quantityToSell,
+                    CostBase = originalSharePrice * quantityToSell,
+                    SalesValue = saleSharePrice * quantityToSell,
+                });
+
                 break;
             }
 
-            soldTransactions.Add(t);
+            lineItems.Add(new CgtEvent
+            {
+                Symbol = saleTransaction.Symbol,
+                PurchaseDate = t.Date,
+                SellDate = saleTransaction.Date,
+                Quantity = t.Quantity,
+                CostBase = t.Value,
+                SalesValue = saleSharePrice * t.Quantity,
+            });
+
             quantityToSell -= t.Quantity;
             openTransactions.RemoveAt(i);
             i--;
         }
 
-        return soldTransactions;
+        return lineItems;
     }
 
     private static CgtReport GetCgtReport(Dictionary<int, CgtReport> results, Transaction t)

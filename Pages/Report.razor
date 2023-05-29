@@ -5,39 +5,31 @@
 
 <Nav ShowHome="true" Title="Report" />
 
-<InputSelect @bind-Value="_selectedYear">
-    @for (var y = DateTime.Now.Year; y >= 2000; y--)
-    {
-        <option value="@y">@(y)/@((y + 1) % 100)</option>
-    }
-</InputSelect>
-<button @onclick="View_Click">View</button>
-
-@if (_report is not null)
+@foreach (var report in _report)
 {
-    foreach (var report in _report)
-    {
-        <h3>@report.TaxYear</h3>
+    <h3>@report.TaxYear</h3>
 
-        foreach (var (sale, buys) in report.Sales)
-        {
-            <p><b>Sold @sale.Quantity.ToString("0.####") of @sale.Symbol for @sale.Value.ToString("$#,##0.00") on @sale.Date.</b></p>
-            <ol>
-                @foreach (var buy in buys)
-                {
-                    <li>Bought @buy.Quantity.ToString("0.####") for @buy.Value.ToString("$#,##0.00") on @buy.Date@(buy.Id == Guid.Empty ? " (partial sale)" : "")</li>
-                }
-            </ol>
-        }
-    }
+    <div class="grid">
+        <QuickGrid Items="report.LineItems.AsQueryable()">
+            <PropertyColumn Property="l => l.Symbol" />
+            <PropertyColumn Property="l => l.PurchaseDate" Format="d MMM yyyy" />
+            <PropertyColumn Property="l => l.SellDate" Format="d MMM yyyy" />
+            <PropertyColumn Property="l => l.Quantity" Format="0.####" Align="Align.Right" />
+            <PropertyColumn Property="l => l.CostBase" Format="$#,##0.00" Align="Align.Right" />
+            <PropertyColumn Property="l => l.SalesValue" Format="$#,##0.00" Align="Align.Right" />
+            <PropertyColumn Property="l => l.Profit" Format="$#,##0.00" Align="Align.Right" />
+            <TemplateColumn Title="Gain">
+                @(context.Long ? "Long" : "Short")
+            </TemplateColumn>
+        </QuickGrid>
+    </div>
 }
 
 @code {
-    private List<CgtReport>? _report;
-    private int _selectedYear = DateTime.Now.Year - 1;
+    private List<CgtReport> _report = null!;
 
-    private async Task View_Click()
+    protected override async Task OnInitializedAsync()
     {
-        _report = await CgtReportCreator.CreateAsync(this.Data, _selectedYear).ConfigureAwait(false);
+        _report = await CgtReportCreator.CreateAsync(this.Data).ConfigureAwait(false);
     }
 }

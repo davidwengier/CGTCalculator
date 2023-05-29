@@ -1,0 +1,13 @@
+﻿.grid {
+    overflow-y: auto;
+}
+
+    /* Sticky header while scrolling */
+    .grid ::deep thead {
+        background-color: #d8d8d8;
+        outline: 1px solid gray;
+    }
+
+    .grid ::deep table {
+        min-width: 100%;
+    }

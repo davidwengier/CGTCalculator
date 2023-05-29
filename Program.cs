@@ -43,7 +43,7 @@ internal static class Program
     private static Form CreateForm(ServiceProvider services)
         => new Form
         {
-            Size = new Size(1200, 800),
+            Size = new Size(1500, 900),
             Text = "CGT Calculator",
             Controls =
             {
