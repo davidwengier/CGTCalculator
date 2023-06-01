@@ -13,8 +13,6 @@ internal static class Program
 
         var services = ConfigureServices();
 
-        ConfigureDatabase(services);
-
         var form = CreateForm(services);
 
         Application.Run(form);
@@ -28,16 +26,9 @@ internal static class Program
         services.AddSingleton<DataSource>();
 
         services.AddQuickGridEntityFrameworkAdapter();
-        services.AddDbContext<DataSource>(options => options.UseSqlite("Data Source=CGTCalculator.db"));
+        services.AddDbContext<DataSource>(options => options.UseSqlite());
 
         return services.BuildServiceProvider();
-    }
-
-    private static void ConfigureDatabase(ServiceProvider services)
-    {
-        var database = services.GetRequiredService<DataSource>();
-        database.Database.EnsureCreated();
-        _ = database.GetDatabaseInfo();
     }
 
     private static Form CreateForm(ServiceProvider services)

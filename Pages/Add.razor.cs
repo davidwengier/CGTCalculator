@@ -37,7 +37,7 @@ public partial class Add
         }
 
         await this.DataSource.SaveChangesAsync().ConfigureAwait(false);
-        this.NavigationManager.NavigateTo("/");
+        this.NavigationManager.NavigateTo("/transactions");
     }
 
     private void Cancel_Click()

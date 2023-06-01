@@ -2,12 +2,20 @@
 
 internal class DataSource : DbContext
 {
-    public DbSet<DatabaseInfo> DatabaseInfos { get; set; } = null!;
-    public DbSet<Transaction> Transactions { get; set; } = null!;
+    public DbSet<DatabaseInfo> DatabaseInfos { get; private set; } = null!;
+    public DbSet<Transaction> Transactions { get; private set; } = null!;
+    public bool IsInitialized { get; private set; }
 
     public DataSource(DbContextOptions<DataSource> options)
         : base(options)
     {
+    }
+
+    internal void Initialize()
+    {
+        this.Database.EnsureCreated();
+        _ = this.GetDatabaseInfo();
+        this.IsInitialized = true;
     }
 
     public DatabaseInfo GetDatabaseInfo()

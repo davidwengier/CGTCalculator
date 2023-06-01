@@ -1,0 +1,14 @@
+﻿@page "/"
+@inject DataSource Data
+@inject NavigationManager NavigationManager
+
+@if (!this.Data.IsInitialized)
+{
+    <h1>CGT Calculator</h1>
+
+    <p>No database loaded. Create a new one, or load an existing one, using the buttons below.</p>
+    <p>If you have a CSV file of transactions to import, create a new database first, then you can import from the transaction list screen.</p>
+
+    <button @onclick="Create_Click">Create New Database</button>
+    <button @onclick="Load_Click">Load Existing Database</button>
+}
