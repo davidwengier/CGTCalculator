@@ -1,4 +1,12 @@
-﻿.grid {
+﻿.loss {
+    color: red;
+}
+
+.gain {
+    color: green;
+}
+
+.grid {
     overflow-y: auto;
 }
 

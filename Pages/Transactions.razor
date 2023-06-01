@@ -15,10 +15,12 @@
 <div class="grid">
     <QuickGrid Items="_transactions" @ref="_grid">
         <PropertyColumn Property="t => t.Date" Format="dd MMM yyyy" Sortable="true" IsDefaultSort="SortDirection.Descending" />
-        <PropertyColumn Property="t => t.Type" />
+        <TemplateColumn Title="@nameof(Field.Type)">
+            <span class="@context.Type.ToString().ToLower()">@context.Type</span>
+        </TemplateColumn>
         <PropertyColumn Property="t => t.Symbol" />
         <TemplateColumn Title="@nameof(Field.Quantity)" Align="Align.Right">
-            <span class="quantity @context.Type.ToString().ToLower()">@context.Quantity.ToString("0.####")</span>
+            <span class="@context.Type.ToString().ToLower()">@context.Quantity.ToString("0.####")</span>
         </TemplateColumn>
         <TemplateColumn Title="@nameof(Field.Value)" Align="Align.Right">
             <span class="money @context.Type.ToString().ToLower()">@context.Value.ToString("$#,##0.00")</span>
