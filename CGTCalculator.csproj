@@ -7,7 +7,12 @@
 		<UseWindowsForms>true</UseWindowsForms>
 		<ImplicitUsings>enable</ImplicitUsings>
 	  <LangVersion>preview</LangVersion>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="icon.png" />
+	</ItemGroup>
 
   <ItemGroup>
     <Using Include="Microsoft.EntityFrameworkCore" />

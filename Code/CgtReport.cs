@@ -1,17 +1,18 @@
 ﻿namespace CGTCalculator;
 
-internal class CgtReport(int taxYear)
+internal class CgtReport
 {
+    private readonly int _taxYear;
     private readonly List<(Transaction, List<Transaction>)> _sales = new();
 
-    public int TaxYearSort => taxYear;
-    public string TaxYear => $"{taxYear}/{taxYear + 1 % 100}";
+    public int TaxYearSort => _taxYear;
+    public string TaxYear => $"{_taxYear}/{_taxYear + 1 % 100}";
     public List<(Transaction Sale, List<Transaction> Buys)> Sales => _sales;
 
     public List<CgtEvent> LineItems { get; } = new();
 
-    public void AddSale(Transaction sale, List<Transaction> buys)
+    public CgtReport(int taxYear)
     {
-        _sales.Add((sale, buys));
+        _taxYear = taxYear;
     }
 }

@@ -36,6 +36,8 @@ internal static class Program
         {
             Size = new Size(1500, 900),
             Text = "CGT Calculator",
+            Icon = LoadIcon(),
+            StartPosition = FormStartPosition.CenterScreen,
             Controls =
             {
                 new BlazorWebView
@@ -50,4 +52,13 @@ internal static class Program
                 }
             }
         };
+
+    private static Icon LoadIcon()
+    {
+        using (var stream = typeof(Program).Assembly.GetManifestResourceStream("CGTCalculator.icon.png"))
+        {
+            var bitmap = (Bitmap)Image.FromStream(stream!);
+            return Icon.FromHandle(bitmap.GetHicon());
+        }
+    }
 }
