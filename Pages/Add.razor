@@ -7,7 +7,7 @@
 <Nav ShowHome="false" Title="Add Transaction" />
 
 <table>
-    <tr><td>Symbol:</td><td><InputText @bind-Value="_model.Symbol" style="text-transform: uppercase;" /></td></tr>
+    <tr><td>Symbol:</td><td><SymbolSelector @bind-Value="_model.Symbol" /></td></tr>
     <tr><td>Date:</td><td><InputDate @bind-Value="_model.Date" /></td></tr>
     <tr>
         <td>Type:</td>
@@ -24,5 +24,7 @@
     <tr><td>Value:</td><td><InputNumber @bind-Value="_model.Value" /></td></tr>
 </table>
 
-<button @onclick="Add_Click">@(IsAdd ? "Add" : "Save")</button>
-<button @onclick="Cancel_Click">Cancel</button>
+<p>
+    <button @onclick="Add_Click">@(IsAdd ? "Add" : "Save")</button>
+    <button @onclick="Cancel_Click">Cancel</button>
+</p>

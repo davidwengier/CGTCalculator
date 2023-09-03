@@ -1,0 +1,34 @@
+﻿@inject DataSource DataSource
+
+<InputText @bind-Value="Value" list="Symbols" style="text-transform: uppercase;" />
+
+<datalist id="Symbols">
+    @foreach (var symbol in _symbols)
+    {
+        <option>@symbol</option>
+    }
+</datalist>
+
+@code
+{
+    private List<string> _symbols = null!;
+
+    [Parameter]
+    public string? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _symbols = DataSource.GetAllSymbols();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (Value is null or { Length: 0 })
+        {
+            Value = _symbols.FirstOrDefault();
+        }
+    }
+}
