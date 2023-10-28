@@ -21,7 +21,34 @@ internal static class CgtReportCreator
             }
         }
 
-        return new(results.Values.OrderByDescending(r => r.TaxYearSort).ToList(), null!);
+        return new(results.Values.OrderByDescending(r => r.TaxYearSort).ToList(), CreateOpenReport(openTransactions));
+    }
+
+    private static CgtSingleYearReport CreateOpenReport(List<Transaction> openTransactions)
+    {
+        var report = new CgtSingleYearReport(-1);
+
+        for (var i = 0; i < openTransactions.Count; i++)
+        {
+            var t = openTransactions[i];
+
+            var item = new CgtEvent
+            {
+                Symbol = t.Symbol,
+                PurchaseDate = t.Date,
+                SellDate = DateTime.Now.ToDateOnly(),
+                Quantity = t.Quantity,
+                CostBase = t.Value,
+                SalesValue = t.Quantity * 1, //TODO: Get real price
+            };
+
+            report.LineItems.Add(item);
+
+            openTransactions.RemoveAt(i);
+            i--;
+        }
+
+        return report;
     }
 
     private static List<CgtEvent> CreateLineItems(List<Transaction> openTransactions, Transaction saleTransaction)
@@ -99,4 +126,4 @@ internal static class CgtReportCreator
     }
 }
 
-internal record CgtReport(List<CgtSingleYearReport> Reports, List<Transaction> AvailableLongTermLots);
+internal record CgtReport(List<CgtSingleYearReport> Reports, CgtSingleYearReport Open);

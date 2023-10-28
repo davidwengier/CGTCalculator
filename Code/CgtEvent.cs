@@ -1,6 +1,6 @@
 ﻿namespace CGTCalculator;
 
-internal class CgtEvent
+public class CgtEvent
 {
     public required string Symbol { get; init; }
     public required DateOnly PurchaseDate { get; init; }
