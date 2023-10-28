@@ -1,6 +1,7 @@
 ﻿using CGTCalculator.Pages;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 using Microsoft.Extensions.DependencyInjection;
+using MudBlazor.Services;
 
 namespace CGTCalculator;
 
@@ -22,6 +23,8 @@ internal static class Program
     {
         var services = new ServiceCollection();
         services.AddWindowsFormsBlazorWebView();
+
+        services.AddMudServices();
 
         services.AddSingleton<DataSource>();
 

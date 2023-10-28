@@ -1,6 +1,6 @@
 ﻿namespace CGTCalculator;
 
-internal class CgtReport
+internal class CgtSingleYearReport
 {
     private readonly int _taxYear;
 
@@ -14,7 +14,7 @@ internal class CgtReport
     public decimal CGTConcession => this.LongTermGains / 2;
     public decimal TotalCapitalGain => this.ShortTermGains + this.LongTermGains - this.CGTConcession;
 
-    public CgtReport(int taxYear)
+    public CgtSingleYearReport(int taxYear)
     {
         _taxYear = taxYear;
     }

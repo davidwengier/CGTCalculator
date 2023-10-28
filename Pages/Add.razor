@@ -5,6 +5,7 @@
 @inject NavigationManager NavigationManager
 
 <Nav ShowHome="false" Title="Add Transaction" />
+<br />
 
 <table>
     <tr><td>Symbol:</td><td><SymbolSelector @bind-Value="_model.Symbol" /></td></tr>
@@ -25,6 +26,6 @@
 </table>
 
 <p>
-    <button @onclick="Add_Click">@(IsAdd ? "Add" : "Save")</button>
-    <button @onclick="Cancel_Click">Cancel</button>
+    <Button @onclick="Add_Click">@(IsAdd ? "Add" : "Save")</Button>
+    <Button @onclick="Cancel_Click">Cancel</Button>
 </p>

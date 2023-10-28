@@ -7,10 +7,10 @@
 
 <Nav ShowHome="false" Title="Transactions" />
 
-<button @onclick="Add_Click">Add Transaction</button>
-<button @onclick="Import_Click">Import</button>
-<button @onclick="Export_Click">Export</button>
-<button style="float:right" @onclick="Report_Click">Report</button>
+<Button @onclick="Add_Click">Add Transaction</Button>
+<Button @onclick="Import_Click">Import</Button>
+<Button @onclick="Export_Click">Export</Button>
+<Button style="float:right" @onclick="Report_Click">Report</Button>
 
 <div class="grid">
     <QuickGrid Items="_transactions" @ref="_grid">
@@ -26,8 +26,8 @@
             <span class="money @context.Type.ToString().ToLower()">@context.Value.ToString("$#,##0.00")</span>
         </TemplateColumn>
         <TemplateColumn>
-            <button @onclick="() => Edit_Click(context)">Edit</button>
-            <button @onclick="() => Delete_Click(context)">Delete</button>
+            <Button @onclick="() => Edit_Click(context)">Edit</Button>
+            <Button @onclick="() => Delete_Click(context)">Delete</Button>
         </TemplateColumn>
     </QuickGrid>
 </div>

@@ -1,16 +1,11 @@
 @inject NavigationManager NavigationManager
 
-<table>
-    <tr>
-        @if (ShowHome)
-        {
-            <td><button @onclick="Home_Click">Home</button></td>
-        }
-        <td>
-            <h3>@Title</h3>
-        </td>
-    </tr>
-</table>
+<h3>@Title</h3>
+
+@if (ShowHome)
+{
+    <Button @onclick="Home_Click">Home</Button>
+}
 
 @code
 {

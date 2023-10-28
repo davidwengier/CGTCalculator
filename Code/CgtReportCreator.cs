@@ -2,12 +2,12 @@
 
 internal static class CgtReportCreator
 {
-    public static async Task<List<CgtReport>> CreateAsync(DataSource dataSource)
+    public static async Task<CgtReport> CreateAsync(DataSource dataSource)
     {
         var transactions = await dataSource.Transactions.AsNoTracking().OrderBy(t => t.Date).ToListAsync();
 
         var openTransactions = new List<Transaction>();
-        var results = new Dictionary<int, CgtReport>();
+        var results = new Dictionary<int, CgtSingleYearReport>();
         foreach (var t in transactions)
         {
             if (t.Type == TransactionType.Buy)
@@ -21,7 +21,7 @@ internal static class CgtReportCreator
             }
         }
 
-        return results.Values.OrderBy(r => r.TaxYearSort).ToList();
+        return new(results.Values.OrderByDescending(r => r.TaxYearSort).ToList(), null!);
     }
 
     private static List<CgtEvent> CreateLineItems(List<Transaction> openTransactions, Transaction saleTransaction)
@@ -83,7 +83,7 @@ internal static class CgtReportCreator
         return lineItems;
     }
 
-    private static CgtReport GetCgtReport(Dictionary<int, CgtReport> results, Transaction t)
+    private static CgtSingleYearReport GetCgtReport(Dictionary<int, CgtSingleYearReport> results, Transaction t)
     {
         var taxYear = t.Date.Month >= 7
             ? t.Date.Year
@@ -91,10 +91,12 @@ internal static class CgtReportCreator
 
         if (!results.TryGetValue(taxYear, out var report))
         {
-            report = new CgtReport(taxYear);
+            report = new CgtSingleYearReport(taxYear);
             results.Add(taxYear, report);
         }
 
         return report;
     }
 }
+
+internal record CgtReport(List<CgtSingleYearReport> Reports, List<Transaction> AvailableLongTermLots);
