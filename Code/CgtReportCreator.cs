@@ -2,7 +2,7 @@
 
 internal static class CgtReportCreator
 {
-    public static async Task<CgtReport> CreateAsync(DataSource dataSource)
+    public static async Task<CgtReport> CreateAsync(DataSource dataSource, decimal sellPrice)
     {
         var transactions = await dataSource.Transactions.AsNoTracking().OrderBy(t => t.Date).ToListAsync();
 
@@ -21,10 +21,10 @@ internal static class CgtReportCreator
             }
         }
 
-        return new(results.Values.OrderByDescending(r => r.TaxYearSort).ToList(), CreateOpenReport(openTransactions));
+        return new(results.Values.OrderByDescending(r => r.TaxYearSort).ToList(), CreateOpenReport(openTransactions, sellPrice));
     }
 
-    private static CgtSingleYearReport CreateOpenReport(List<Transaction> openTransactions)
+    private static CgtSingleYearReport CreateOpenReport(List<Transaction> openTransactions, decimal sellPrice)
     {
         var report = new CgtSingleYearReport(-1);
 
@@ -39,7 +39,7 @@ internal static class CgtReportCreator
                 SellDate = DateTime.Now.ToDateOnly(),
                 Quantity = t.Quantity,
                 CostBase = t.Value,
-                SalesValue = t.Quantity * 1, //TODO: Get real price
+                SalesValue = t.Quantity * sellPrice,
             };
 
             report.LineItems.Add(item);
@@ -125,5 +125,3 @@ internal static class CgtReportCreator
         return report;
     }
 }
-
-internal record CgtReport(List<CgtSingleYearReport> Reports, CgtSingleYearReport Open);

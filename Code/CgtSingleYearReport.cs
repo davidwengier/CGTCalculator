@@ -5,7 +5,7 @@ public class CgtSingleYearReport
     private readonly int _taxYear;
 
     public int TaxYearSort => _taxYear;
-    public string TaxYear => _taxYear < 0 ? "Open" : $"{_taxYear}/{_taxYear + 1 % 100}";
+    public string TaxYear => $"{_taxYear}/{_taxYear + 1 % 100}";
 
     public List<CgtEvent> LineItems { get; } = new();
 
