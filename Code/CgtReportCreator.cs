@@ -2,7 +2,7 @@
 
 internal static class CgtReportCreator
 {
-    public static async Task<CgtReport> CreateAsync(DataSource dataSource, decimal sellPrice)
+    public static async Task<CgtReport> CreateAsync(DataSource dataSource, decimal sellPrice, string currency)
     {
         var transactions = await dataSource.Transactions.AsNoTracking().OrderBy(t => t.Date).ToListAsync();
 
@@ -21,12 +21,20 @@ internal static class CgtReportCreator
             }
         }
 
-        return new(results.Values.OrderByDescending(r => r.TaxYearSort).ToList(), CreateOpenReport(openTransactions, sellPrice));
+        var reports = results.Values.OrderByDescending(r => r.TaxYearSort).ToList();
+        var open = CreateOpenReport(openTransactions, sellPrice, currency);
+
+        return new(reports, open);
     }
 
-    private static CgtSingleYearReport CreateOpenReport(List<Transaction> openTransactions, decimal sellPrice)
+    private static CgtSingleYearReport CreateOpenReport(List<Transaction> openTransactions, decimal sellPrice, string currency)
     {
         var report = new CgtSingleYearReport(-1);
+
+        if (currency == "USD")
+        {
+            sellPrice = sellPrice * Convert.ToDecimal(ExchangeRates.Instance.Get("aud").rate);
+        }
 
         for (var i = 0; i < openTransactions.Count; i++)
         {

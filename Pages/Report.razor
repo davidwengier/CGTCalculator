@@ -8,7 +8,14 @@
     @if (HasOpen)
     {
         <MudBlazor.MudTabPanel Text="Open">
-            <p>Sell price: <WhileTypingInputText @bind-Value="SellPrice" /></p>
+            <p>
+                Sell price:
+                <WhileTypingInputText @bind-Value="SellPrice" />
+                <InputSelect @bind-Value="Currency">
+                    <option>USD</option>
+                    <option>AUD</option>
+                </InputSelect>
+            </p>
             <CgtSingleYearReport Report="_report.Open" />
         </MudBlazor.MudTabPanel>
     }
@@ -19,29 +26,3 @@
         </MudBlazor.MudTabPanel>
     }
 </MudBlazor.MudTabs>
-
-@code {
-    private CgtReport _report = null!;
-    private decimal _sellPrice = 100;
-
-    private bool HasOpen => _report.Open.LineItems.Count > 0;
-
-    private string SellPrice
-    {
-        get
-        {
-            return _sellPrice.ToString();
-        }
-        set
-        {
-            decimal.TryParse(value, out _sellPrice);
-            _ = OnInitializedAsync();
-            this.StateHasChanged();
-        }
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        _report = await CgtReportCreator.CreateAsync(this.Data, _sellPrice).ConfigureAwait(false);
-    }
-}
