@@ -3,5 +3,6 @@
 internal enum TransactionType
 {
     Buy,
-    Sell
+    Sell,
+    Wash
 }

@@ -24,9 +24,9 @@ public partial class Add
 
     private async Task Add_Click()
     {
-        var multiplier = _model.Type == TransactionType.Buy
-            ? 1
-            : -1;
+        var multiplier = _model.Type == TransactionType.Sell
+            ? -1
+            : 1;
         _model.Quantity = Math.Abs(_model.Quantity) * multiplier;
         _model.Value = Math.Abs(_model.Value) * multiplier;
 

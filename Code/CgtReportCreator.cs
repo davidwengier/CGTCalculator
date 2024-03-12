@@ -14,7 +14,7 @@ internal static class CgtReportCreator
             {
                 openTransactions.Add(t);
             }
-            else
+            else if (t.Type == TransactionType.Sell)
             {
                 var report = GetCgtReport(results, t);
                 report.LineItems.AddRange(CreateLineItems(openTransactions, t));
