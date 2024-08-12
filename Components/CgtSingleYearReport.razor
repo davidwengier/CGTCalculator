@@ -47,4 +47,6 @@
         <tr><td>CGT Concession:</td><td align="center">-</td><td align="right">@Report.CGTConcession.ToString("$#,##0.00")</td></tr>
         <tr><td><b>Capital Gain:</b></td><th align="center">=</th><th align="right">@((Report.LongTermGains - Report.CGTConcession).ToString("$#,##0.00"))</th></tr>
     }
+
+    <tr><td><b>Total Buys and Washes:</b></td><th align="center">=</th><th align="right">@Report.TotalBuysAndWashes.ToString("$#,##0.00")</th></tr>
 </table>

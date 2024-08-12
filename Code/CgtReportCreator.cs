@@ -21,9 +21,25 @@ internal static class CgtReportCreator
             }
         }
 
-        var reports = results.Values.OrderByDescending(r => r.TaxYearSort).ToList();
         var open = CreateOpenReport(openTransactions, sellPrice, currency);
 
+        foreach (var t in transactions)
+        {
+            if (t.Type == TransactionType.Sell)
+            {
+                continue;
+            }
+
+            var taxYear = t.TaxYear == DateTime.Now.Year
+                ? -1
+                : t.TaxYear;
+            if (results.TryGetValue(taxYear, out var report))
+            {
+                report.TotalBuysAndWashes += Math.Abs(t.Value);
+            }
+        }
+
+        var reports = results.Values.OrderByDescending(r => r.TaxYearSort).ToList();
         return new(reports, open);
     }
 
@@ -120,9 +136,7 @@ internal static class CgtReportCreator
 
     private static CgtSingleYearReport GetCgtReport(Dictionary<int, CgtSingleYearReport> results, Transaction t)
     {
-        var taxYear = t.Date.Month >= 7
-            ? t.Date.Year
-            : t.Date.Year - 1;
+        var taxYear = t.TaxYear;
 
         if (!results.TryGetValue(taxYear, out var report))
         {

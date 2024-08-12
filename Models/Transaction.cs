@@ -9,6 +9,10 @@ internal class Transaction
     public decimal Quantity { get; set; }
     public decimal Value { get; set; }
 
+    public int TaxYear => this.Date.Month >= 7
+            ? this.Date.Year
+            : this.Date.Year - 1;
+
     public override string ToString()
     {
         return $"{this.Type} of {this.Quantity:0.####} {this.Symbol} at {this.Value:$#,##0.00}";
