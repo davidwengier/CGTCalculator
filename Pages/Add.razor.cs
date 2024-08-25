@@ -20,6 +20,14 @@ public partial class Add
         {
             _model = await this.DataSource.Transactions.Where(t => t.Id == this.Id).FirstAsync().ConfigureAwait(false);
         }
+        else
+        {
+            var lastTransaction = await this.DataSource.Transactions.OrderByDescending(t => t.Date).FirstOrDefaultAsync().ConfigureAwait(false);
+            if (lastTransaction is not null)
+            {
+                _model.Symbol = lastTransaction.Symbol;
+            }
+        }
     }
 
     private async Task Add_Click()
