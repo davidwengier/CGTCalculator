@@ -6,6 +6,10 @@
     color: green;
 }
 
+.wash {
+    color: teal;
+}
+
 .grid {
     height: 28rem;
     overflow-y: auto;
