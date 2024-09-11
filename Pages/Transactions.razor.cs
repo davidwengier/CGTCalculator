@@ -53,7 +53,12 @@ public partial class Transactions
         {
             this.Data.Remove(transaction);
             await this.Data.SaveChangesAsync();
-            await _grid.RefreshDataAsync().ConfigureAwait(false);
+            //await _grid.RefreshDataAsync().ConfigureAwait(false);
         }
+    }
+
+    private string GetTaxYearTitle(int year)
+    {
+        return $"{year}/{(year + 1) % 100}";
     }
 }
