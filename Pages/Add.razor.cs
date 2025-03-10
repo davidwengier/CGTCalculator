@@ -22,6 +22,14 @@ public partial class Add
         }
     }
 
+    protected override void OnParametersSet()
+    {
+        if (this.IsAdd)
+        {
+            _model.Symbol = this.DataSource.Transactions.OrderByDescending(t=>t.Date).FirstOrDefault()?.Symbol ?? string.Empty;
+        }
+    }
+
     private async Task Add_Click()
     {
         var multiplier = _model.Type == TransactionType.Sell
