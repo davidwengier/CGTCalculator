@@ -1,23 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="icon.png" />
   </ItemGroup>
-
   <ItemGroup>
     <Using Include="Microsoft.EntityFrameworkCore" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" Version="0.1.0-alpha.22351.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="0.1.0-alpha.22351.1" />
@@ -33,5 +29,4 @@
     </PackageReference>
     <PackageReference Include="MudBlazor" Version="6.11.0" />
   </ItemGroup>
-
 </Project>
