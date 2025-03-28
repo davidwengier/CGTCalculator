@@ -1,9 +1,8 @@
 @page "/transactions"
-@inject DataSource Data
-@inject NavigationManager NavigationManager
-
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.EntityFrameworkCore;
+@inject DataSource Data
+@inject NavigationManager NavigationManager
 
 <Nav ShowHome="false" Title="Transactions" />
 
@@ -12,22 +11,33 @@
 <Button @onclick="Export_Click">Export</Button>
 <Button style="float:right" @onclick="Report_Click">Report</Button>
 
-<div class="grid">
-    <QuickGrid Items="_transactions" @ref="_grid">
-        <PropertyColumn Property="t => t.Date" Format="dd MMM yyyy" Sortable="true" IsDefaultSort="SortDirection.Descending" />
-        <TemplateColumn Title="@nameof(Field.Type)">
-            <span class="@context.Type.ToString().ToLower()">@context.Type</span>
-        </TemplateColumn>
-        <PropertyColumn Property="t => t.Symbol" />
-        <TemplateColumn Title="@nameof(Field.Quantity)" Align="Align.Right">
-            <span class="@context.Type.ToString().ToLower()">@context.Quantity.ToString("0.####")</span>
-        </TemplateColumn>
-        <TemplateColumn Title="@nameof(Field.Value)" Align="Align.Right">
-            <span class="money @context.Type.ToString().ToLower()">@context.Value.ToString("$#,##0.00")</span>
-        </TemplateColumn>
-        <TemplateColumn>
-            <Button @onclick="() => Edit_Click(context)">Edit</Button>
-            <Button @onclick="() => Delete_Click(context)">Delete</Button>
-        </TemplateColumn>
-    </QuickGrid>
-</div>
+<MudBlazor.MudTabs>
+    @foreach (var year in _transactions.AsEnumerable().GroupBy(t => t.TaxYear).OrderByDescending(g => g.Key))
+    {
+        <MudBlazor.MudTabPanel Text="@GetTaxYearTitle(year.Key)">
+            <div class="grid">
+                <QuickGrid Items="year.AsQueryable()">
+                    <PropertyColumn Property="t => t.Date" Format="dd MMM yyyy" Sortable="true" IsDefaultSortColumn="true" InitialSortDirection="SortDirection.Descending" />
+                    <TemplateColumn Title="@nameof(Field.Type)">
+                        <span class="@context.Type.ToString().ToLower()">@context.Type</span>
+                    </TemplateColumn>
+                    <PropertyColumn Property="t => t.Symbol" />
+                    <TemplateColumn Title="@nameof(Field.Quantity)" Align="Align.Right">
+                        <span class="@context.Type.ToString().ToLower()">@context.Quantity.ToString("0.####")</span>
+                    </TemplateColumn>
+                    <TemplateColumn Title="@nameof(Field.Value)" Align="Align.Right">
+                        <span class="money @context.Type.ToString().ToLower()">@context.Value.ToString("$#,##0.00")</span>
+                    </TemplateColumn>
+                    <TemplateColumn>
+                        <Button @onclick="() => Edit_Click(context)">Edit</Button>
+                        <Button @onclick="() => Delete_Click(context)">Delete</Button>
+                    </TemplateColumn>
+                </QuickGrid>
+            </div>
+            <table width="300">
+                <tr><td><b>Total Buys and Washes:</b></td><th align="center">=</th><th align="right">@year.Where(t => t.Type != TransactionType.Sell).Sum(t => Math.Abs(t.Value)).ToString("$#,##0.00")</th></tr>
+                <tr><td><b>Total Sales:</b></td><th align="center">=</th><th align="right">@year.Where(t => t.Type == TransactionType.Sell).Sum(t => Math.Abs(t.Value)).ToString("$#,##0.00")</th></tr>
+            </table>
+        </MudBlazor.MudTabPanel>
+    }
+</MudBlazor.MudTabs>
