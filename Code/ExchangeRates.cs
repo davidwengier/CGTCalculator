@@ -47,7 +47,7 @@ public class ExchangeRates
             return rate;
         }
 
-        rate = this.Rates.Values.FirstOrDefault(r =>
+        rate = this.Rates.Values.First(r =>
             r.code.IndexOf(currency, StringComparison.OrdinalIgnoreCase) != -1 ||
             r.name.IndexOf(currency, StringComparison.OrdinalIgnoreCase) != -1);
 
@@ -64,6 +64,5 @@ public class ExchangeRate
     public string numericCode { get; set; }
     public string name { get; set; }
     public float rate { get; set; }
-    //public DateTime date { get; set; }
     public float inverseRate { get; set; }
 }
