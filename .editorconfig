@@ -271,3 +271,6 @@ dotnet_diagnostic.IDE0052.severity = warning
 # IDE0051: Remove unused private members
 dotnet_diagnostic.IDE0051.severity=warning
 csharp_style_namespace_declarations=file_scoped:warning
+
+# WFO1000: Missing code serialization configuration for property content
+dotnet_diagnostic.WFO1000.severity = none
