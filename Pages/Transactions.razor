@@ -12,7 +12,7 @@
 <Button style="float:right" @onclick="Report_Click">Report</Button>
 
 <MudBlazor.MudTabs>
-    @foreach (var year in _transactions.AsEnumerable().GroupBy(t => t.TaxYear).OrderByDescending(g => g.Key))
+    @foreach (var year in _transactions!.AsEnumerable().GroupBy(t => t.TaxYear).OrderByDescending(g => g.Key))
     {
         <MudBlazor.MudTabPanel Text="@GetTaxYearTitle(year.Key)">
             <div class="grid">

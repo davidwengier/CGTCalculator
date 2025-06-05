@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Components.QuickGrid;
-
-namespace CGTCalculator.Pages;
+﻿namespace CGTCalculator.Pages;
 
 public partial class Transactions
 {
-    private QuickGrid<Transaction> _grid = null!;
     private IQueryable<Transaction>? _transactions;
 
     protected override Task OnInitializedAsync()
@@ -53,7 +50,6 @@ public partial class Transactions
         {
             this.Data.Remove(transaction);
             await this.Data.SaveChangesAsync();
-            //await _grid.RefreshDataAsync().ConfigureAwait(false);
         }
     }
 

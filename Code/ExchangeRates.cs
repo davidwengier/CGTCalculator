@@ -57,12 +57,14 @@ public class ExchangeRates
     public Dictionary<string, ExchangeRate> Rates { get; private set; } = new Dictionary<string, ExchangeRate>();
 }
 
+#pragma warning disable IDE1006 // Naming Styles
 public class ExchangeRate
 {
-    public string code { get; set; }
-    public string alphaCode { get; set; }
-    public string numericCode { get; set; }
-    public string name { get; set; }
-    public float rate { get; set; }
-    public float inverseRate { get; set; }
+    public required string code { get; set; }
+    public required string alphaCode { get; set; }
+    public required string numericCode { get; set; }
+    public required string name { get; set; }
+    public required float rate { get; set; }
+    public required float inverseRate { get; set; }
 }
+#pragma warning restore IDE1006 // Naming Styles
