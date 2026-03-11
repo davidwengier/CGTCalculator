@@ -30,13 +30,8 @@ internal static class CgtReportCreator
                 continue;
             }
 
-            var taxYear = t.TaxYear == DateTime.Now.Year
-                ? -1
-                : t.TaxYear;
-            if (results.TryGetValue(taxYear, out var report))
-            {
-                report.TotalBuysAndWashes += Math.Abs(t.Value);
-            }
+            var report = GetCgtReport(results, t);
+            report.TotalBuysAndWashes += Math.Abs(t.Value);
         }
 
         var reports = results.Values.OrderByDescending(r => r.TaxYearSort).ToList();
