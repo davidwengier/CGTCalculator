@@ -55,6 +55,6 @@ public partial class Transactions
 
     private string GetTaxYearTitle(int year)
     {
-        return $"{year}/{(year + 1) % 100}";
+        return year.ToTaxYearTitle();
     }
 }

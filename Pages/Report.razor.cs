@@ -1,4 +1,4 @@
-﻿namespace CGTCalculator.Pages;
+namespace CGTCalculator.Pages;
 
 public partial class Report
 {
@@ -14,8 +14,7 @@ public partial class Report
         set
         {
             decimal.TryParse(value, out _sellPrice);
-            _ = OnInitializedAsync();
-            StateHasChanged();
+            _ = RefreshReportAsync();
         }
     }
 
@@ -25,13 +24,41 @@ public partial class Report
         set
         {
             _currency = value;
-            _ = OnInitializedAsync();
-            StateHasChanged();
+            _ = RefreshReportAsync();
         }
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        _report = await CgtReportCreator.CreateAsync(this.Data, _sellPrice, _currency).ConfigureAwait(false);
+        return RefreshReportAsync();
+    }
+
+    private async Task RefreshReportAsync()
+    {
+        _report = await CgtReportCreator.CreateAsync(this.Data, _sellPrice, _currency);
+        StateHasChanged();
+    }
+
+    private async Task ExportPdf_Click()
+    {
+        await RefreshReportAsync();
+
+        using var dialog = new FolderBrowserDialog
+        {
+            Description = "Choose a folder for the report PDF files.",
+            ShowNewFolderButton = true
+        };
+
+        if (dialog.ShowDialog() != DialogResult.OK)
+        {
+            return;
+        }
+
+        var exportedFiles = ReportPdfExporter.Export(dialog.SelectedPath, _report, _sellPrice, _currency);
+        MessageBox.Show(
+            $"Exported {exportedFiles.Count} PDF file(s) to {dialog.SelectedPath}.",
+            "Report export complete",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Information);
     }
 }

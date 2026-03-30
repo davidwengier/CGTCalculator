@@ -1,7 +1,8 @@
-﻿using CGTCalculator.Pages;
+using CGTCalculator.Pages;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
+using QuestPDF.Infrastructure;
 
 namespace CGTCalculator;
 
@@ -10,6 +11,7 @@ internal static class Program
     [STAThread]
     public static void Main()
     {
+        QuestPDF.Settings.License = LicenseType.Community;
         ApplicationConfiguration.Initialize();
 
         var services = ConfigureServices();
@@ -37,7 +39,7 @@ internal static class Program
     private static Form CreateForm(ServiceProvider services)
         => new Form
         {
-            Size = new Size(1500, 900),
+            Size = new System.Drawing.Size(1500, 900),
             Text = "CGT Calculator",
             Icon = LoadIcon(),
             StartPosition = FormStartPosition.CenterScreen,
@@ -60,7 +62,7 @@ internal static class Program
     {
         using (var stream = typeof(Program).Assembly.GetManifestResourceStream("CGTCalculator.icon.png"))
         {
-            var bitmap = (Bitmap)Image.FromStream(stream!);
+            var bitmap = (Bitmap)System.Drawing.Image.FromStream(stream!);
             return Icon.FromHandle(bitmap.GetHicon());
         }
     }

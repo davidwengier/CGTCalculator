@@ -5,6 +5,7 @@ internal static class CgtReportCreator
     public static async Task<CgtReport> CreateAsync(DataSource dataSource, decimal sellPrice, string currency)
     {
         var transactions = await dataSource.Transactions.AsNoTracking().OrderBy(t => t.Date).ToListAsync();
+        var sourceTransactions = transactions.ToDictionary(t => t.Id, CloneTransaction);
 
         var openTransactions = new List<Transaction>();
         var results = new Dictionary<int, CgtSingleYearReport>();
@@ -17,11 +18,12 @@ internal static class CgtReportCreator
             else if (t.Type == TransactionType.Sell)
             {
                 var report = GetCgtReport(results, t);
-                report.LineItems.AddRange(CreateLineItems(openTransactions, t));
+                report.AddContributingTransaction(sourceTransactions[t.Id]);
+                report.LineItems.AddRange(CreateLineItems(openTransactions, t, report, sourceTransactions));
             }
         }
 
-        var open = CreateOpenReport(openTransactions, sellPrice, currency);
+        var open = CreateOpenReport(openTransactions, sellPrice, currency, sourceTransactions);
 
         foreach (var t in transactions)
         {
@@ -38,7 +40,7 @@ internal static class CgtReportCreator
         return new(reports, open);
     }
 
-    private static CgtSingleYearReport CreateOpenReport(List<Transaction> openTransactions, decimal sellPrice, string currency)
+    private static CgtSingleYearReport CreateOpenReport(List<Transaction> openTransactions, decimal sellPrice, string currency, IReadOnlyDictionary<Guid, Transaction> sourceTransactions)
     {
         var report = new CgtSingleYearReport(-1);
 
@@ -50,6 +52,7 @@ internal static class CgtReportCreator
         for (var i = 0; i < openTransactions.Count; i++)
         {
             var t = openTransactions[i];
+            report.AddContributingTransaction(sourceTransactions[t.Id]);
 
             var item = new CgtEvent
             {
@@ -70,7 +73,11 @@ internal static class CgtReportCreator
         return report;
     }
 
-    private static List<CgtEvent> CreateLineItems(List<Transaction> openTransactions, Transaction saleTransaction)
+    private static List<CgtEvent> CreateLineItems(
+        List<Transaction> openTransactions,
+        Transaction saleTransaction,
+        CgtSingleYearReport report,
+        IReadOnlyDictionary<Guid, Transaction> sourceTransactions)
     {
         var lineItems = new List<CgtEvent>();
         var quantityToSell = Math.Abs(saleTransaction.Quantity);
@@ -87,6 +94,8 @@ internal static class CgtReportCreator
             {
                 break;
             }
+
+            report.AddContributingTransaction(sourceTransactions[t.Id]);
 
             if (t.Quantity > quantityToSell)
             {
@@ -127,6 +136,19 @@ internal static class CgtReportCreator
         }
 
         return lineItems;
+    }
+
+    private static Transaction CloneTransaction(Transaction transaction)
+    {
+        return new Transaction
+        {
+            Id = transaction.Id,
+            Symbol = transaction.Symbol,
+            Date = transaction.Date,
+            Type = transaction.Type,
+            Quantity = transaction.Quantity,
+            Value = transaction.Value
+        };
     }
 
     private static CgtSingleYearReport GetCgtReport(Dictionary<int, CgtSingleYearReport> results, Transaction t)

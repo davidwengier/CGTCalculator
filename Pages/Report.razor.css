@@ -1,0 +1,59 @@
+.report-toolbar {
+    align-items: stretch;
+}
+
+.report-toolbar__panel {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.25rem;
+}
+
+.report-toolbar__copy {
+    max-width: 38rem;
+}
+
+.report-toolbar__eyebrow {
+    margin: 0;
+    color: #2563eb;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.report-toolbar__copy h4 {
+    margin: 0.25rem 0 0;
+    font-size: 1.35rem;
+}
+
+.report-toolbar__copy p:last-child {
+    margin: 0.45rem 0 0;
+}
+
+.report-toolbar__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+.report-control {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    min-width: 11rem;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.report-control--currency {
+    min-width: 7.5rem;
+}
+
+.report-toolbar__actions {
+    display: flex;
+    align-items: flex-start;
+}
