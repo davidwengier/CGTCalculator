@@ -7,8 +7,8 @@ public class Button : MudButton
     protected override void OnParametersSet()
     {
         this.Variant = Variant.Filled;
-        this.Color = MudBlazor.Color.Dark;
-        this.Size = MudBlazor.Size.Small;
+        this.Color = MudBlazor.Color.Primary;
+        this.Size = MudBlazor.Size.Medium;
 
         base.OnParametersSet();
     }

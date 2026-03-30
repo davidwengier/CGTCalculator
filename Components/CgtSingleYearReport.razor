@@ -17,36 +17,38 @@
     </QuickGrid>
 </div>
 
-<p><b>Summary:</b></p>
+<div class="surface-card summary-card">
+    <p><b>Summary:</b></p>
 
-<table width="300">
-    @if (Report.TaxYearSort < 0)
-    {
-        <tr><td colspan="3"><h4>Value:</h4></td></tr>
-        <tr><td>Short Term Total:</td><td></td><td align="right">@Report.ShortTermTotal.ToString("$#,##0.00")</td></tr>
-        <tr><td>Long Term Total:</td><td align="center">+</td><td align="right">@Report.LongTermTotal.ToString("$#,##0.00")</td></tr>
-    }
+    <table width="300">
+        @if (Report.TaxYearSort < 0)
+        {
+            <tr><td colspan="3"><h4>Value:</h4></td></tr>
+            <tr><td>Short Term Total:</td><td></td><td align="right">@Report.ShortTermTotal.ToString("$#,##0.00")</td></tr>
+            <tr><td>Long Term Total:</td><td align="center">+</td><td align="right">@Report.LongTermTotal.ToString("$#,##0.00")</td></tr>
+        }
 
-    <tr><td><b>Total Value:</b></td><th align="center">=</th><th align="right">@Report.TotalValue.ToString("$#,##0.00")</th></tr>
+        <tr><td><b>Total Value:</b></td><th align="center">=</th><th align="right">@Report.TotalValue.ToString("$#,##0.00")</th></tr>
 
-    @if (Report.TaxYearSort < 0)
-    {
-        <tr><td colspan="3"><h4>If All Sold:</h4></td></tr>
-    }
+        @if (Report.TaxYearSort < 0)
+        {
+            <tr><td colspan="3"><h4>If All Sold:</h4></td></tr>
+        }
 
-    <tr><td>Short Term Gains:</td><td></td><td align="right">@Report.ShortTermGains.ToString("$#,##0.00")</td></tr>
-    <tr><td>Long Term Gains:</td><td align="center">+</td><td align="right">@Report.LongTermGains.ToString("$#,##0.00")</td></tr>
-    <tr><td>CGT Concession:</td><td align="center">-</td><td align="right">@Report.CGTConcession.ToString("$#,##0.00")</td></tr>
-    <tr><td colspan="3"><hr /></td></tr>
-    <tr><td><b>Capital Gain:</b></td><th align="center">=</th><th align="right">@Report.TotalCapitalGain.ToString("$#,##0.00")</th></tr>
-
-    @if (Report.TaxYearSort < 0)
-    {
-        <tr><td colspan="3"><h4>If Only Long Sold:</h4></td></tr>
-        <tr><td>Long Term Gains:</td><td align="center"></td><td align="right">@Report.LongTermGains.ToString("$#,##0.00")</td></tr>
+        <tr><td>Short Term Gains:</td><td></td><td align="right">@Report.ShortTermGains.ToString("$#,##0.00")</td></tr>
+        <tr><td>Long Term Gains:</td><td align="center">+</td><td align="right">@Report.LongTermGains.ToString("$#,##0.00")</td></tr>
         <tr><td>CGT Concession:</td><td align="center">-</td><td align="right">@Report.CGTConcession.ToString("$#,##0.00")</td></tr>
-        <tr><td><b>Capital Gain:</b></td><th align="center">=</th><th align="right">@((Report.LongTermGains - Report.CGTConcession).ToString("$#,##0.00"))</th></tr>
-    }
+        <tr><td colspan="3"><hr /></td></tr>
+        <tr><td><b>Capital Gain:</b></td><th align="center">=</th><th align="right">@Report.TotalCapitalGain.ToString("$#,##0.00")</th></tr>
 
-    <tr><td><b>Total Buys and Washes:</b></td><th align="center">=</th><th align="right">@Report.TotalBuysAndWashes.ToString("$#,##0.00")</th></tr>
-</table>
+        @if (Report.TaxYearSort < 0)
+        {
+            <tr><td colspan="3"><h4>If Only Long Sold:</h4></td></tr>
+            <tr><td>Long Term Gains:</td><td align="center"></td><td align="right">@Report.LongTermGains.ToString("$#,##0.00")</td></tr>
+            <tr><td>CGT Concession:</td><td align="center">-</td><td align="right">@Report.CGTConcession.ToString("$#,##0.00")</td></tr>
+            <tr><td><b>Capital Gain:</b></td><th align="center">=</th><th align="right">@((Report.LongTermGains - Report.CGTConcession).ToString("$#,##0.00"))</th></tr>
+        }
+
+        <tr><td><b>Total Buys and Washes:</b></td><th align="center">=</th><th align="right">@Report.TotalBuysAndWashes.ToString("$#,##0.00")</th></tr>
+    </table>
+</div>

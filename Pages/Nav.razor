@@ -1,11 +1,18 @@
 @inject NavigationManager NavigationManager
 
-<h3>@Title</h3>
+<div class="page-header">
+    <div>
+        <div class="page-header__eyebrow">CGT Calculator</div>
+        <h3>@Title</h3>
+    </div>
 
-@if (ShowHome)
-{
-    <Button @onclick="Home_Click">Home</Button>
-}
+    @if (ShowHome)
+    {
+        <div class="page-header__actions">
+            <Button @onclick="Home_Click">Home</Button>
+        </div>
+    }
+</div>
 
 @code
 {

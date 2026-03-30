@@ -5,27 +5,56 @@
 @inject NavigationManager NavigationManager
 
 <Nav ShowHome="false" Title="@(IsAdd ? "Add Transaction" : "Edit Transaction")" />
-<br />
 
-<table>
-    <tr><td>Symbol:</td><td><SymbolInput @bind-Value="_model.Symbol" Symbols="_symbols" /></td></tr>
-    <tr><td>Date:</td><td><InputDate @bind-Value="_model.Date" /></td></tr>
-    <tr>
-        <td>Type:</td>
-        <td>
-            <InputSelect @bind-Value="_model.Type">
-                @foreach (var item in Enum.GetValues<TransactionType>())
-                {
-                    <option value="@item">@item.ToString()</option>
-                }
-            </InputSelect>
-        </td>
-    </tr>
-    <tr><td>Quantity:</td><td><InputNumber @bind-Value="_model.Quantity" /></td></tr>
-    <tr><td>Value:</td><td><InputNumber @bind-Value="_model.Value" /></td></tr>
-</table>
+<div class="editor-shell">
+    <section class="surface-card editor-card">
+        <div class="editor-card__intro">
+            <p class="editor-card__eyebrow">Transaction details</p>
+            <h4>@(IsAdd ? "Capture the next transaction quickly" : "Update the selected transaction")</h4>
+            <p>
+                @(IsAdd
+                    ? "Date and symbol carry forward from the last transaction you added, and the symbol field also lets you choose from symbols already in the database."
+                    : "Adjust any of the transaction details below, then save when you're ready.")
+            </p>
+        </div>
 
-<p>
-    <Button @onclick="Add_Click">@(IsAdd ? "Add" : "Save")</Button>
-    <Button @onclick="Cancel_Click">Cancel</Button>
-</p>
+        <div class="editor-form-grid">
+            <label class="field field--wide">
+                <span>Symbol</span>
+                <SymbolInput @bind-Value="_model.Symbol"
+                             Symbols="_symbols"
+                             placeholder="Start typing or pick an existing symbol" />
+            </label>
+
+            <label class="field">
+                <span>Date</span>
+                <InputDate @bind-Value="_model.Date" />
+            </label>
+
+            <label class="field">
+                <span>Type</span>
+                <InputSelect @bind-Value="_model.Type">
+                    @foreach (var item in Enum.GetValues<TransactionType>())
+                    {
+                        <option value="@item">@item.ToString()</option>
+                    }
+                </InputSelect>
+            </label>
+
+            <label class="field">
+                <span>Quantity</span>
+                <InputNumber @bind-Value="_model.Quantity" />
+            </label>
+
+            <label class="field">
+                <span>Total Value</span>
+                <InputNumber @bind-Value="_model.Value" />
+            </label>
+        </div>
+
+        <div class="page-actions">
+            <Button @onclick="Add_Click">@(IsAdd ? "Add" : "Save")</Button>
+            <Button @onclick="Cancel_Click">Cancel</Button>
+        </div>
+    </section>
+</div>
