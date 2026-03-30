@@ -30,4 +30,10 @@
     <PackageReference Include="MudBlazor" Version="9.1.0" />
     <PackageReference Include="QuestPDF" Version="2026.2.4" />
   </ItemGroup>
+
+  <Target Name="RemoveWebView2WpfReference" BeforeTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <Reference Remove="@(Reference)" Condition="'%(Reference.Filename)%(Reference.Extension)' == 'Microsoft.Web.WebView2.Wpf.dll'" />
+    </ItemGroup>
+  </Target>
 </Project>
