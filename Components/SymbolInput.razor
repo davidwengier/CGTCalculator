@@ -1,0 +1,22 @@
+@inherits InputText
+
+<input @attributes="AdditionalAttributes"
+       class="@CssClass"
+       list="@_listId"
+       @bind="CurrentValueAsString"
+       @bind:event="oninput" />
+
+<datalist id="@_listId">
+    @foreach (var symbol in Symbols)
+    {
+        <option value="@symbol"></option>
+    }
+</datalist>
+
+@code
+{
+    [Parameter]
+    public IReadOnlyList<string> Symbols { get; set; } = Array.Empty<string>();
+
+    private readonly string _listId = $"symbols-{Guid.NewGuid():N}";
+}

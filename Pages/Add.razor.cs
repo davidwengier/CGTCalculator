@@ -1,47 +1,68 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using CGTCalculator.Code;
+using Microsoft.AspNetCore.Components;
 
 namespace CGTCalculator.Pages;
 
 public partial class Add
 {
-    private static DateOnly s_lastAddDateTime = DateTime.Now.ToDateOnly();
-    private static TransactionType s_lastTransactionType;
-
     [Parameter]
     public Guid Id { get; set; } = Guid.Empty;
 
     private Transaction _model = new();
+    private IReadOnlyList<string> _symbols = Array.Empty<string>();
+    private Guid? _loadedTransactionId;
 
     private bool IsAdd => this.Id == Guid.Empty;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        if (!this.IsAdd)
+        if (_loadedTransactionId == this.Id)
         {
-            _model = await this.DataSource.Transactions.Where(t => t.Id == this.Id).FirstAsync().ConfigureAwait(false);
+            return;
+        }
+
+        _loadedTransactionId = this.Id;
+        _symbols = await LoadSymbolsAsync().ConfigureAwait(false);
+
+        if (this.IsAdd)
+        {
+            _model = CreateAddModel();
         }
         else
         {
-            var lastTransaction = await this.DataSource.Transactions.OrderByDescending(t => t.Date).FirstOrDefaultAsync().ConfigureAwait(false);
-            if (lastTransaction is not null)
-            {
-                _model.Symbol = lastTransaction.Symbol;
-            }
+            _model = await this.DataSource.Transactions.Where(t => t.Id == this.Id).FirstAsync().ConfigureAwait(false);
         }
     }
 
-    protected override void OnParametersSet()
+    private async Task<IReadOnlyList<string>> LoadSymbolsAsync()
     {
-        if (this.IsAdd)
+        return await this.DataSource.Transactions
+            .AsNoTracking()
+            .Select(t => t.Symbol)
+            .Distinct()
+            .OrderBy(symbol => symbol)
+            .ToListAsync()
+            .ConfigureAwait(false);
+    }
+
+    private Transaction CreateAddModel()
+    {
+        var defaults = AddTransactionDefaults.Read();
+
+        return new Transaction
         {
-            _model.Symbol = this.DataSource.Transactions.OrderByDescending(t => t.Date).FirstOrDefault()?.Symbol ?? string.Empty;
-            _model.Date = s_lastAddDateTime;
-            _model.Type = s_lastTransactionType;
-        }
+            Symbol = defaults.Symbol.Length > 0
+                ? defaults.Symbol
+                : _symbols.FirstOrDefault() ?? string.Empty,
+            Date = defaults.Date,
+            Type = defaults.Type
+        };
     }
 
     private async Task Add_Click()
     {
+        _model.Symbol = _model.Symbol.Trim();
+
         var multiplier = _model.Type == TransactionType.Sell
             ? -1
             : 1;
@@ -52,10 +73,8 @@ public partial class Add
         {
             _model.Id = Guid.NewGuid();
             await this.DataSource.Transactions.AddAsync(_model).ConfigureAwait(false);
+            AddTransactionDefaults.Write(_model);
         }
-
-        s_lastTransactionType = _model.Type;
-        s_lastAddDateTime = _model.Date;
 
         await this.DataSource.SaveChangesAsync().ConfigureAwait(false);
         this.NavigationManager.NavigateTo("/transactions");

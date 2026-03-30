@@ -4,11 +4,11 @@
 @inject DataSource DataSource
 @inject NavigationManager NavigationManager
 
-<Nav ShowHome="false" Title="Add Transaction" />
+<Nav ShowHome="false" Title="@(IsAdd ? "Add Transaction" : "Edit Transaction")" />
 <br />
 
 <table>
-    <tr><td>Symbol:</td><td><InputText @bind-Value="_model.Symbol" /></td></tr>
+    <tr><td>Symbol:</td><td><SymbolInput @bind-Value="_model.Symbol" Symbols="_symbols" /></td></tr>
     <tr><td>Date:</td><td><InputDate @bind-Value="_model.Date" /></td></tr>
     <tr>
         <td>Type:</td>
