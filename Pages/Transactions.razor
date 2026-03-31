@@ -14,7 +14,17 @@
             <Button @onclick="Export_Click">Export</Button>
         </div>
 
-        <Button @onclick="Report_Click">Report</Button>
+        <Button @onclick="Report_Click" Disabled="_isNavigatingToReport">
+            @if (_isNavigatingToReport)
+            {
+                <MudBlazor.MudProgressCircular Class="report-button__spinner" Indeterminate="true" Size="MudBlazor.Size.Small" Color="MudBlazor.Color.Inherit" />
+                <span>Loading report...</span>
+            }
+            else
+            {
+                <span>Report</span>
+            }
+        </Button>
     </div>
 </PageTopBar>
 

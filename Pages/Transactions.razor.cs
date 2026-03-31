@@ -3,6 +3,7 @@
 public partial class Transactions
 {
     private IQueryable<Transaction>? _transactions;
+    private bool _isNavigatingToReport;
 
     protected override Task OnInitializedAsync()
     {
@@ -33,8 +34,11 @@ public partial class Transactions
         }
     }
 
-    private void Report_Click()
+    private async Task Report_Click()
     {
+        _isNavigatingToReport = true;
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(50);
         this.NavigationManager.NavigateTo("/report");
     }
 
