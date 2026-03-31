@@ -11,7 +11,17 @@ internal static class Program
     [STAThread]
     public static void Main()
     {
-        QuestPDF.Settings.License = LicenseType.Community;
+        try
+        {
+            QuestPDF.Settings.License = LicenseType.Community;
+            ReportPdfExporter.IsSupported = true;
+        }
+        catch (Exception)
+        {
+            // QuestPDF doesn't support this runtime (e.g. win-arm64).
+            // The app will still work; PDF export will be disabled.
+        }
+
         ApplicationConfiguration.Initialize();
 
         var services = ConfigureServices();

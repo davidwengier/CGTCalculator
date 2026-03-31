@@ -31,7 +31,14 @@
     </div>
 
     <div class="report-toolbar__actions">
-        <Button @onclick="ExportPdf_Click">Export PDFs</Button>
+        @if (ReportPdfExporter.IsSupported)
+        {
+            <Button @onclick="ExportPdf_Click">Export PDFs</Button>
+        }
+        else
+        {
+            <p class="report-toolbar__unsupported">PDF export is not available on this platform.</p>
+        }
     </div>
 </div>
 

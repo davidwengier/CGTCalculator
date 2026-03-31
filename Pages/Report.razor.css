@@ -57,3 +57,11 @@
     display: flex;
     align-items: flex-start;
 }
+
+.report-toolbar__unsupported {
+    margin: 0;
+    padding: 0.5rem 1rem;
+    color: #64748b;
+    font-size: 0.85rem;
+    font-style: italic;
+}

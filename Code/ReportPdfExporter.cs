@@ -6,6 +6,8 @@ namespace CGTCalculator;
 
 internal static class ReportPdfExporter
 {
+    internal static bool IsSupported { get; set; }
+
     private enum CellAlignment
     {
         Left,
