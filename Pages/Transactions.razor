@@ -4,17 +4,19 @@
 @inject DataSource Data
 @inject NavigationManager NavigationManager
 
-<Nav ShowHome="false" Title="Transactions" />
+<PageTopBar>
+    <Nav ShowHome="false" Title="Transactions" />
 
-<div class="page-toolbar">
-    <div class="page-toolbar__group">
-        <Button @onclick="Add_Click">Add Transaction</Button>
-        <Button @onclick="Import_Click">Import</Button>
-        <Button @onclick="Export_Click">Export</Button>
+    <div class="page-toolbar">
+        <div class="page-toolbar__group">
+            <Button @onclick="Add_Click">Add Transaction</Button>
+            <Button @onclick="Import_Click">Import</Button>
+            <Button @onclick="Export_Click">Export</Button>
+        </div>
+
+        <Button @onclick="Report_Click">Report</Button>
     </div>
-
-    <Button @onclick="Report_Click">Report</Button>
-</div>
+</PageTopBar>
 
 <MudBlazor.MudTabs>
     @foreach (var year in _transactions!.AsEnumerable().GroupBy(t => t.TaxYear).OrderByDescending(g => g.Key))

@@ -1,0 +1,50 @@
+@using Microsoft.JSInterop
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<div class="@CssClass" @ref="_element">
+    @ChildContent
+</div>
+
+@code {
+    private readonly string _id = $"page-topbar-{Guid.NewGuid():N}";
+    private ElementReference _element;
+    private bool _initialized;
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private string CssClass => string.IsNullOrWhiteSpace(Class)
+        ? "page-topbar"
+        : $"page-topbar {Class}";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        await JS.InvokeVoidAsync("cgtPageTopBar.init", _id, _element);
+        _initialized = true;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (!_initialized)
+        {
+            return;
+        }
+
+        try
+        {
+            await JS.InvokeVoidAsync("cgtPageTopBar.dispose", _id);
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+    }
+}

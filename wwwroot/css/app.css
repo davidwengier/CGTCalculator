@@ -26,6 +26,79 @@ body {
     padding: 1.5rem 1.75rem 2rem;
 }
 
+.page-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    margin: -0.3rem 0 1rem;
+    padding: 0.3rem 0 0.9rem;
+    background:
+        linear-gradient(180deg, rgba(248, 251, 255, 0.97) 0%, rgba(244, 247, 251, 0.94) 72%, rgba(244, 247, 251, 0) 100%);
+    backdrop-filter: blur(12px);
+}
+
+.page-topbar,
+.page-topbar .page-header,
+.page-topbar .page-header h3,
+.page-topbar .page-header__eyebrow,
+.page-topbar .page-toolbar,
+.page-topbar .surface-card,
+.page-topbar .report-toolbar__copy h4,
+.page-topbar .report-toolbar__copy p:last-child {
+    transition:
+        margin 0.18s ease,
+        padding 0.18s ease,
+        gap 0.18s ease,
+        font-size 0.18s ease,
+        letter-spacing 0.18s ease,
+        opacity 0.18s ease,
+        max-height 0.18s ease,
+        box-shadow 0.18s ease,
+        border-radius 0.18s ease;
+}
+
+.page-topbar .report-toolbar__copy p:last-child {
+    max-height: 4rem;
+    overflow: hidden;
+}
+
+.page-topbar.is-condensed {
+    padding-bottom: 0.65rem;
+}
+
+.page-topbar.is-condensed .page-header {
+    margin-bottom: 0.85rem;
+}
+
+.page-topbar.is-condensed .page-header h3 {
+    font-size: 1.45rem;
+}
+
+.page-topbar.is-condensed .page-header__eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+}
+
+.page-topbar.is-condensed .page-toolbar {
+    gap: 0.6rem;
+}
+
+.page-topbar.is-condensed .surface-card {
+    padding: 1rem 1.15rem;
+    border-radius: 20px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+.page-topbar.is-condensed .report-toolbar__copy h4 {
+    font-size: 1.1rem;
+}
+
+.page-topbar.is-condensed .report-toolbar__copy p:last-child {
+    margin-top: 0;
+    max-height: 0;
+    opacity: 0;
+}
+
 h1:focus {
     outline: none;
 }
@@ -169,6 +242,11 @@ table {
 @media (max-width: 640px) {
     #app {
         padding: 1rem;
+    }
+
+    .page-topbar {
+        margin-top: -0.15rem;
+        padding-top: 0.15rem;
     }
 
     .page-toolbar {

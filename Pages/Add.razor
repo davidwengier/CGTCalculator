@@ -4,7 +4,9 @@
 @inject DataSource DataSource
 @inject NavigationManager NavigationManager
 
-<Nav ShowHome="false" Title="@(IsAdd ? "Add Transaction" : "Edit Transaction")" />
+<PageTopBar>
+    <Nav ShowHome="false" Title="@(IsAdd ? "Add Transaction" : "Edit Transaction")" />
+</PageTopBar>
 
 <div class="editor-shell">
     <section class="surface-card editor-card">

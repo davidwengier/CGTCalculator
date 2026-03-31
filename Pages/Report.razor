@@ -1,46 +1,48 @@
 @page "/report"
 @inject DataSource Data
 
-<Nav ShowHome="true" Title="Report" />
+<PageTopBar>
+    <Nav ShowHome="true" Title="Report" />
 
-<div class="page-toolbar report-toolbar">
-    <div class="surface-card report-toolbar__panel">
-        <div class="report-toolbar__copy">
-            <p class="report-toolbar__eyebrow">PDF export</p>
-            <h4>Generate polished year-by-year report packs</h4>
-            <p>Exports one PDF per report tab, with the summary view first and the contributing transactions on the following pages.</p>
+    <div class="page-toolbar report-toolbar">
+        <div class="surface-card report-toolbar__panel">
+            <div class="report-toolbar__copy">
+                <p class="report-toolbar__eyebrow">PDF export</p>
+                <h4>Generate polished year-by-year report packs</h4>
+                <p>Exports one PDF per report tab, with the summary view first and the contributing transactions on the following pages.</p>
+            </div>
+
+            @if (HasOpen)
+            {
+                <div class="report-toolbar__controls">
+                    <label class="report-control">
+                        <span>Open position sell price</span>
+                        <WhileTypingInputText @bind-Value="SellPrice" />
+                    </label>
+
+                    <label class="report-control report-control--currency">
+                        <span>Currency</span>
+                        <InputSelect @bind-Value="Currency">
+                            <option>USD</option>
+                            <option>AUD</option>
+                        </InputSelect>
+                    </label>
+                </div>
+            }
         </div>
 
-        @if (HasOpen)
-        {
-            <div class="report-toolbar__controls">
-                <label class="report-control">
-                    <span>Open position sell price</span>
-                    <WhileTypingInputText @bind-Value="SellPrice" />
-                </label>
-
-                <label class="report-control report-control--currency">
-                    <span>Currency</span>
-                    <InputSelect @bind-Value="Currency">
-                        <option>USD</option>
-                        <option>AUD</option>
-                    </InputSelect>
-                </label>
-            </div>
-        }
+        <div class="report-toolbar__actions">
+            @if (ReportPdfExporter.IsSupported)
+            {
+                <Button @onclick="ExportPdf_Click">Export PDFs</Button>
+            }
+            else
+            {
+                <p class="report-toolbar__unsupported">PDF export is not available on this platform.</p>
+            }
+        </div>
     </div>
-
-    <div class="report-toolbar__actions">
-        @if (ReportPdfExporter.IsSupported)
-        {
-            <Button @onclick="ExportPdf_Click">Export PDFs</Button>
-        }
-        else
-        {
-            <p class="report-toolbar__unsupported">PDF export is not available on this platform.</p>
-        }
-    </div>
-</div>
+</PageTopBar>
 
 <MudBlazor.MudTabs>
     @if (HasOpen)
