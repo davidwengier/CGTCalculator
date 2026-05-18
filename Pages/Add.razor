@@ -10,16 +10,6 @@
 
 <div class="editor-shell">
     <section class="surface-card editor-card">
-        <div class="editor-card__intro">
-            <p class="editor-card__eyebrow">Transaction details</p>
-            <h4>@(IsAdd ? "Capture the next transaction quickly" : "Update the selected transaction")</h4>
-            <p>
-                @(IsAdd
-                    ? "Date and symbol carry forward from the last transaction you added, and the symbol field also lets you choose from symbols already in the database."
-                    : "Adjust any of the transaction details below, then save when you're ready.")
-            </p>
-        </div>
-
         <div class="editor-form-grid">
             <label class="field field--wide">
                 <span>Symbol</span>

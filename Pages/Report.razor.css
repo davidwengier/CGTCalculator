@@ -1,36 +1,5 @@
 .report-toolbar {
-    align-items: stretch;
-}
-
-.report-toolbar__panel {
-    display: flex;
-    flex: 1;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1.25rem;
-}
-
-.report-toolbar__copy {
-    max-width: 38rem;
-}
-
-.report-toolbar__eyebrow {
-    margin: 0;
-    color: #2563eb;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-}
-
-.report-toolbar__copy h4 {
-    margin: 0.25rem 0 0;
-    font-size: 1.35rem;
-}
-
-.report-toolbar__copy p:last-child {
-    margin: 0.45rem 0 0;
+    align-items: flex-end;
 }
 
 .report-toolbar__controls {
@@ -56,12 +25,23 @@
 .report-toolbar__actions {
     display: flex;
     align-items: flex-start;
+    margin-left: auto;
+}
+
+.report-toolbar > .report-toolbar__actions:only-child {
+    margin-left: 0;
 }
 
 .report-toolbar__unsupported {
     margin: 0;
-    padding: 0.5rem 1rem;
+    padding: 0.25rem 0;
     color: #64748b;
     font-size: 0.85rem;
     font-style: italic;
+}
+
+@media (max-width: 640px) {
+    .report-toolbar__actions {
+        margin-left: 0;
+    }
 }
