@@ -46,7 +46,7 @@ internal static class CgtReportCreator
 
         if (currency == "USD")
         {
-            sellPrice = sellPrice * Convert.ToDecimal(ExchangeRates.Instance.Get("aud").rate);
+            sellPrice *= ExchangeRates.Instance.Get("aud").rate;
         }
 
         for (var i = 0; i < openTransactions.Count; i++)

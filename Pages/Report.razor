@@ -36,17 +36,24 @@
     </div>
 </PageTopBar>
 
-<MudBlazor.MudTabs>
-    @if (HasOpen)
-    {
-        <MudBlazor.MudTabPanel Text="Open">
-            <CgtSingleYearReport Report="_report.Open" />
-        </MudBlazor.MudTabPanel>
-    }
-    @foreach (var report in _report.Reports)
-    {
-        <MudBlazor.MudTabPanel Text="@report.TaxYear">
-            <CgtSingleYearReport Report="report" />
-        </MudBlazor.MudTabPanel>
-    }
-</MudBlazor.MudTabs>
+@if (_reportError is not null)
+{
+    <MudBlazor.MudAlert Severity="MudBlazor.Severity.Error">@_reportError</MudBlazor.MudAlert>
+}
+else if (_report is not null)
+{
+    <MudBlazor.MudTabs>
+        @if (HasOpen)
+        {
+            <MudBlazor.MudTabPanel Text="Open">
+                <CgtSingleYearReport Report="_report.Open" />
+            </MudBlazor.MudTabPanel>
+        }
+        @foreach (var report in _report.Reports)
+        {
+            <MudBlazor.MudTabPanel Text="@report.TaxYear">
+                <CgtSingleYearReport Report="report" />
+            </MudBlazor.MudTabPanel>
+        }
+    </MudBlazor.MudTabs>
+}

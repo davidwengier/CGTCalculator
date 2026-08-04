@@ -1,12 +1,15 @@
+﻿using System.Text.Json;
+
 namespace CGTCalculator.Pages;
 
 public partial class Report
 {
-    private CgtReport _report = null!;
+    private CgtReport? _report;
+    private string? _reportError;
     private decimal _sellPrice = 100;
     private string _currency = "USD";
 
-    private bool HasOpen => _report.Open.LineItems.Count > 0;
+    private bool HasOpen => _report?.Open.LineItems.Count > 0;
 
     private string SellPrice
     {
@@ -35,13 +38,28 @@ public partial class Report
 
     private async Task RefreshReportAsync()
     {
-        _report = await CgtReportCreator.CreateAsync(this.Data, _sellPrice, _currency);
+        try
+        {
+            _report = await CgtReportCreator.CreateAsync(this.Data, _sellPrice, _currency);
+            _reportError = null;
+        }
+        catch (Exception ex) when (ex is HttpRequestException or JsonException or InvalidDataException or KeyNotFoundException)
+        {
+            _report = null;
+            _reportError = $"Unable to load exchange rates: {ex.Message}";
+        }
+
         StateHasChanged();
     }
 
     private async Task ExportPdf_Click()
     {
         await RefreshReportAsync();
+
+        if (_report is null)
+        {
+            return;
+        }
 
         using var dialog = new FolderBrowserDialog
         {

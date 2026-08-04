@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace CGTCalculator;
 
@@ -22,17 +23,12 @@ public class ExchangeRates
             {
                 lock (s_httpClient)
                 {
-                    s_currencyCacheCreated = now;
-                    s_instance = new ExchangeRates();
+                    string json = s_httpClient.GetStringAsync(Endpoint).GetAwaiter().GetResult();
+                    var rates = JsonSerializer.Deserialize<Dictionary<string, ExchangeRate>>(json)
+                        ?? throw new InvalidDataException("The exchange-rate service returned no data.");
 
-                    try
-                    {
-                        string json = s_httpClient.GetStringAsync(Endpoint).Result;
-                        s_instance.Rates = JsonSerializer.Deserialize<Dictionary<string, ExchangeRate>>(json)!;
-                    }
-                    catch
-                    {
-                    }
+                    s_instance = new ExchangeRates { Rates = rates };
+                    s_currencyCacheCreated = now;
                 }
             }
 
@@ -47,9 +43,10 @@ public class ExchangeRates
             return rate;
         }
 
-        rate = this.Rates.Values.First(r =>
+        rate = this.Rates.Values.FirstOrDefault(r =>
             r.code.IndexOf(currency, StringComparison.OrdinalIgnoreCase) != -1 ||
-            r.name.IndexOf(currency, StringComparison.OrdinalIgnoreCase) != -1);
+            r.name.IndexOf(currency, StringComparison.OrdinalIgnoreCase) != -1)
+            ?? throw new KeyNotFoundException($"No exchange rate was found for '{currency}'.");
 
         return rate;
     }
@@ -64,7 +61,10 @@ public class ExchangeRate
     public required string alphaCode { get; set; }
     public required string numericCode { get; set; }
     public required string name { get; set; }
-    public required float rate { get; set; }
-    public required float inverseRate { get; set; }
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+    public required decimal rate { get; set; }
+
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+    public required decimal inverseRate { get; set; }
 }
 #pragma warning restore IDE1006 // Naming Styles
