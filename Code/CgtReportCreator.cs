@@ -81,6 +81,11 @@ internal static class CgtReportCreator
     {
         var lineItems = new List<CgtEvent>();
         var quantityToSell = Math.Abs(saleTransaction.Quantity);
+        if (quantityToSell == 0)
+        {
+            return lineItems;
+        }
+
         var saleSharePrice = saleTransaction.Value / saleTransaction.Quantity;
         for (var i = 0; i < openTransactions.Count; i++)
         {

@@ -41,8 +41,12 @@
     </table>
 }
 
-<Button @onclick="DoImport">Import</Button>
+<Button @onclick="DoImport" Disabled="_isImporting">@(_isImporting ? "Importing..." : "Import")</Button>
 @if (_buttonClicked && _lastSelectedFile is null)
 {
     <p style="color: red">Please select a file to import</p>
+}
+@if (_importError is not null)
+{
+    <MudBlazor.MudAlert Severity="MudBlazor.Severity.Error">@_importError</MudBlazor.MudAlert>
 }

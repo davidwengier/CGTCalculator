@@ -4,10 +4,12 @@ namespace CGTCalculator.Pages;
 
 public partial class Report
 {
+    private readonly SemaphoreSlim _refreshLock = new(1, 1);
     private CgtReport? _report;
     private string? _reportError;
     private decimal _sellPrice = 100;
     private string _currency = "USD";
+    private int _refreshVersion;
 
     private bool HasOpen => _report?.Open.LineItems.Count > 0;
 
@@ -38,8 +40,15 @@ public partial class Report
 
     private async Task RefreshReportAsync()
     {
+        var refreshVersion = Interlocked.Increment(ref _refreshVersion);
+        await _refreshLock.WaitAsync();
         try
         {
+            if (refreshVersion != _refreshVersion)
+            {
+                return;
+            }
+
             _report = await CgtReportCreator.CreateAsync(this.Data, _sellPrice, _currency);
             _reportError = null;
         }
@@ -48,8 +57,12 @@ public partial class Report
             _report = null;
             _reportError = $"Unable to load exchange rates: {ex.Message}";
         }
+        finally
+        {
+            _refreshLock.Release();
+        }
 
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task ExportPdf_Click()

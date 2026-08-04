@@ -22,7 +22,7 @@ public partial class Add
         }
 
         _loadedTransactionId = this.Id;
-        _symbols = await LoadSymbolsAsync().ConfigureAwait(false);
+        _symbols = await LoadSymbolsAsync();
 
         if (this.IsAdd)
         {
@@ -30,7 +30,16 @@ public partial class Add
         }
         else
         {
-            _model = await this.DataSource.Transactions.Where(t => t.Id == this.Id).FirstAsync().ConfigureAwait(false);
+            var transaction = await this.DataSource.Transactions
+                .FirstOrDefaultAsync(t => t.Id == this.Id);
+
+            if (transaction is null)
+            {
+                this.NavigationManager.NavigateTo("/transactions");
+                return;
+            }
+
+            _model = transaction;
         }
     }
 
@@ -41,8 +50,7 @@ public partial class Add
             .Select(t => t.Symbol)
             .Distinct()
             .OrderBy(symbol => symbol)
-            .ToListAsync()
-            .ConfigureAwait(false);
+            .ToListAsync();
     }
 
     private Transaction CreateAddModel()
@@ -72,11 +80,11 @@ public partial class Add
         if (this.IsAdd)
         {
             _model.Id = Guid.NewGuid();
-            await this.DataSource.Transactions.AddAsync(_model).ConfigureAwait(false);
+            await this.DataSource.Transactions.AddAsync(_model);
             AddTransactionDefaults.Write(_model);
         }
 
-        await this.DataSource.SaveChangesAsync().ConfigureAwait(false);
+        await this.DataSource.SaveChangesAsync();
         this.NavigationManager.NavigateTo("/transactions");
     }
 
