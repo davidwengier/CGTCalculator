@@ -17,18 +17,7 @@ internal static class SettingsStorage
 
     internal static void WriteString(string keyName, string value)
     {
-        var registry = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\CgtCalculator");
-        try
-        {
-            if (registry is null)
-            {
-                registry = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\CgtCalculator");
-            }
-            registry.SetValue(keyName, value, RegistryValueKind.String);
-        }
-        finally
-        {
-            registry?.Dispose();
-        }
+        using var registry = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\CgtCalculator");
+        registry.SetValue(keyName, value, RegistryValueKind.String);
     }
 }
